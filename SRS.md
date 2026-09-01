@@ -1,54 +1,71 @@
-## Purpose and Scope
+## 1. Purpose and Scope
 
-**Purpose:**
-The purpose of the College Management System is to provide a simple system for managing student registration, student records, attendance, marks, grades, and student reports.
+### Purpose
 
-**In Scope:**
+The purpose of the College Maintenance Management System is to provide a simple system for students and maintenance staff to manage college maintenance complaints. The system will support login, complaint submission, complaint tracking, complaint management, maintenance categories, and basic reports.
 
-* Student registration and login.
-* Adding, editing, and deleting student details.
-* Searching and viewing student records.
-* Managing student attendance.
-* Managing student marks and grades.
-* Generating simple student reports.
+### In Scope
 
-**Out of Scope:**
+* Student and maintenance staff login.
+* Submission and tracking of maintenance complaints.
+* Staff assignment, updating, and resolution of complaints.
+* Categorization of maintenance complaints.
+* Reports on pending, ongoing, and resolved complaints.
 
-* Faculty management.
-* Course or subject scheduling.
-* Fee and payment management.
-* Library management.
-* Hostel management.
-* Examination scheduling.
+### Out of Scope
 
-## Functional Requirements
+* Online payment or billing.
+* Mobile application.
+* Automated maintenance scheduling.
+* Integration with external systems.
+* Advanced analytics or prediction.
 
-* **FR-01:** The system shall allow students to register and log in.
-* **FR-02:** The system shall allow authorized users to add, edit, and delete student details.
-* **FR-03:** The system shall allow users to search for and view student records.
-* **FR-04:** The system shall allow users to record and manage student attendance.
-* **FR-05:** The system shall allow users to record student marks and grades.
-* **FR-06:** The system shall generate simple reports containing student information, attendance, marks, and grades.
+---
 
-## Non-Functional Requirements
+## 2. Functional Requirements
 
-* **NFR-01:** The system shall display normal page or record operations within **2 seconds** under normal local usage.
-* **NFR-02:** The system shall store user passwords using a secure hashing method with **at least 256-bit security**.
-* **NFR-03:** The system shall allow a new user to complete registration or login within **3 minutes** without assistance.
-* **NFR-04:** The system shall maintain at least **99% reliability** during normal project testing.
-* **NFR-05:** The system shall provide clear error messages for **100% of invalid form submissions**.
-* **NFR-06:** The system shall prevent unauthorized users from accessing protected student data in **100% of access-control tests**.
+**FR-01:** The system shall allow students and maintenance staff to log in securely.
 
-## Assumptions
+**FR-02:** The system shall allow students to submit maintenance complaints.
 
-* Users have access to a computer with Python installed.
-* The system will be used by a limited number of college users.
-* SQLite will be sufficient for the expected project data.
-* Users will provide accurate student, attendance, marks, and grade information.
+**FR-03:** The system shall allow students to view the status of their submitted complaints.
 
-## Constraints
+**FR-04:** The system shall allow maintenance staff to view, assign, update, and resolve complaints.
 
-* The system shall be developed using **Python**.
-* The database shall use **SQLite**.
-* The first version shall be developed within **a few weeks**.
-* The system shall remain limited to the **six specified features**.
+**FR-05:** The system shall organize maintenance complaints into categories such as electrical, plumbing, and cleaning.
+
+**FR-06:** The system shall generate reports showing pending, ongoing, and resolved complaints.
+
+---
+
+## 3. Non-Functional Requirements
+
+**NFR-01:** The system shall respond to normal user actions within **3 seconds**.
+
+**NFR-02:** The system shall allow only authenticated users to access protected system functions.
+
+**NFR-03:** The system shall provide a usable interface that allows a user to complete a complaint submission within **5 minutes**.
+
+**NFR-04:** The system shall maintain complaint data with at least **99% data consistency** during normal operation.
+
+**NFR-05:** The system shall support at least **20 simultaneous users** during normal operation.
+
+**NFR-06:** The system shall successfully process at least **95% of valid user requests** without system failure.
+
+---
+
+## 4. Assumptions
+
+* Users will have valid login credentials.
+* Students will submit accurate complaint information.
+* Maintenance staff will update complaint statuses correctly.
+* The system will use SQLite as its database.
+* The system will be developed using Python.
+
+## 5. Constraints
+
+* The project will use **Python** for development.
+* The project will use **SQLite** for data storage.
+* The first version will be developed as a small college project.
+* The system will depend on a local computer environment for operation.
+* Development time and resources will be limited.
