@@ -5,27 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>College Maintenance Management System</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-
 <section id="loginPage" class="login-page">
+    <div class="login-orb orb-one"></div>
+    <div class="login-orb orb-two"></div>
     <div class="login-card">
         <div class="login-logo">CM</div>
+        <div class="eyebrow">COLLEGE MANAGEMENT</div>
         <h1>College Maintenance</h1>
-        <p class="login-subtitle">Management System</p>
-
+        <p class="login-subtitle">Manage complaints. Keep your campus running smoothly.</p>
         <form id="loginForm">
             <div class="form-group">
                 <label for="username">Username</label>
                 <input type="text" id="username" placeholder="Enter username" required>
             </div>
-
             <div class="form-group">
                 <label for="password">Password</label>
                 <input type="password" id="password" placeholder="Enter password" required>
             </div>
-
             <div class="form-group">
                 <label for="userRole">Login as</label>
                 <select id="userRole">
@@ -33,8 +32,7 @@
                     <option value="staff">Maintenance Staff</option>
                 </select>
             </div>
-
-            <button type="submit" class="primary-btn login-btn">Login</button>
+            <button type="submit" class="primary-btn login-btn">Sign In <span>→</span></button>
         </form>
     </div>
 </section>
@@ -43,39 +41,27 @@
     <aside class="sidebar">
         <div class="brand">
             <div class="brand-logo">CM</div>
-            <div>
-                <h2>College</h2>
-                <span>Maintenance</span>
+            <div class="brand-copy">
+                <h2>College Maintenance</h2>
+                <span>Management System</span>
             </div>
         </div>
 
         <nav class="navigation">
-            <p class="nav-title">MENU</p>
-
-            <button class="nav-item active" data-section="dashboard">
-                <span class="nav-icon">⌂</span> Dashboard
-            </button>
-
-            <button class="nav-item" data-section="submitComplaint" id="submitNav">
-                <span class="nav-icon">＋</span> Submit Complaint
-            </button>
-
-            <button class="nav-item" data-section="trackComplaints" id="trackNav">
-                <span class="nav-icon">◷</span> Track Complaints
-            </button>
-
-            <button class="nav-item" data-section="manageComplaints" id="manageNav">
-                <span class="nav-icon">☷</span> Manage Complaints
-            </button>
-
-            <button class="nav-item" data-section="categories">
-                <span class="nav-icon">▦</span> Categories
-            </button>
-
-            <button class="nav-item" data-section="reports">
-                <span class="nav-icon">▥</span> Reports
-            </button>
+            <p class="nav-title">MAIN MENU</p>
+            <button class="nav-item active" data-section="dashboard"><span class="nav-icon">▦</span>Dashboard</button>
+            <button class="nav-item" data-section="submitComplaint" id="submitNav"><span class="nav-icon">✎</span>Submit Complaint</button>
+            <button class="nav-item" data-section="trackComplaints" id="trackNav"><span class="nav-icon">▣</span>Track Complaints</button>
+            <button class="nav-item" data-section="manageComplaints" id="manageNav"><span class="nav-icon">⚒</span>Manage Complaints</button>
+            <button class="nav-item" data-section="categories"><span class="nav-icon">◈</span>Categories</button>
+            <button class="nav-item" data-section="reports"><span class="nav-icon">▥</span>Reports</button>
         </nav>
+
+        <div class="sidebar-message">
+            <div class="message-art"><span>⚒</span><span>✦</span></div>
+            <strong>Keep the campus<br>safe & efficient.</strong>
+            <small>Every complaint makes a difference.</small>
+        </div>
 
         <div class="sidebar-user">
             <div class="avatar" id="sidebarAvatar">S</div>
@@ -88,221 +74,170 @@
 
     <main class="main-content">
         <header class="header">
-            <button class="mobile-menu" id="mobileMenu">☰</button>
-
-            <div class="header-search">
-                <span>⌕</span>
-                <input type="text" id="globalSearch" placeholder="Search complaints...">
-            </div>
-
-            <div class="profile-area">
-                <div class="profile-text">
-                    <strong id="headerName">Student</strong>
-                    <span id="headerRole">Student</span>
+            <div class="header-left">
+                <button class="mobile-menu" id="mobileMenu">☰</button>
+                <div class="welcome-copy">
+                    <h1>Welcome back, <span id="welcomeName">Student</span>! <span class="wave">👋</span></h1>
+                    <p>Here’s what’s happening with maintenance today.</p>
                 </div>
-                <div class="profile-avatar" id="headerAvatar">S</div>
+            </div>
+            <div class="header-right">
+                <div class="header-search">
+                    <span>⌕</span>
+                    <input type="text" id="globalSearch" placeholder="Search complaints...">
+                </div>
+                <div class="profile-area">
+                    <div class="profile-avatar" id="headerAvatar">S</div>
+                    <div class="profile-text">
+                        <strong id="headerName">Student</strong>
+                        <span id="headerRole">Student</span>
+                    </div>
+                    <span class="profile-arrow">⌄</span>
+                </div>
             </div>
         </header>
 
         <section id="dashboard" class="page-section active-section">
-            <div class="page-heading">
+            <div class="page-heading dashboard-heading">
                 <div>
-                    <p class="breadcrumb">Home / Dashboard</p>
-                    <h1>Dashboard</h1>
-                    <p>Overview of college maintenance complaints.</p>
+                    <p class="breadcrumb">HOME / DASHBOARD</p>
+                    <h2>Maintenance Overview</h2>
                 </div>
             </div>
 
             <div class="summary-grid">
-                <div class="summary-card">
-                    <div class="card-icon">☷</div>
-                    <div><span>Total Complaints</span><h2 id="totalComplaints">0</h2></div>
+                <div class="summary-card total-card">
+                    <div class="metric-icon">▣</div>
+                    <div><span>Total Complaints</span><h2 id="totalComplaints">0</h2><small>All submitted complaints</small></div>
                 </div>
-                <div class="summary-card">
-                    <div class="card-icon">◷</div>
-                    <div><span>Pending</span><h2 id="pendingComplaints">0</h2></div>
+                <div class="summary-card pending-card">
+                    <div class="metric-icon">⌛</div>
+                    <div><span>Pending</span><h2 id="pendingComplaints">0</h2><small>Awaiting action</small></div>
                 </div>
-                <div class="summary-card">
-                    <div class="card-icon">↻</div>
-                    <div><span>Ongoing</span><h2 id="ongoingComplaints">0</h2></div>
+                <div class="summary-card ongoing-card">
+                    <div class="metric-icon">↻</div>
+                    <div><span>Ongoing</span><h2 id="ongoingComplaints">0</h2><small>Currently in progress</small></div>
                 </div>
-                <div class="summary-card">
-                    <div class="card-icon">✓</div>
-                    <div><span>Resolved</span><h2 id="resolvedComplaints">0</h2></div>
+                <div class="summary-card resolved-card">
+                    <div class="metric-icon">✓</div>
+                    <div><span>Resolved</span><h2 id="resolvedComplaints">0</h2><small>Successfully resolved</small></div>
                 </div>
             </div>
 
-            <div class="content-grid">
-                <div class="panel">
-                    <div class="panel-header">
-                        <div>
-                            <h2>Main Actions</h2>
-                            <p>Access maintenance complaint functions.</p>
+            <div class="dashboard-layout">
+                <div class="dashboard-main">
+                    <div class="panel quick-panel">
+                        <div class="panel-header compact-header">
+                            <div><h2>Quick Actions</h2><p>Access the main maintenance functions.</p></div>
+                        </div>
+                        <div class="action-grid">
+                            <button class="action-card purple-action student-action" data-section="submitComplaint">
+                                <span class="action-icon">＋</span><strong>New Complaint</strong><small>Submit a maintenance issue</small>
+                            </button>
+                            <button class="action-card green-action student-action" data-section="trackComplaints">
+                                <span class="action-icon">▣</span><strong>My Complaints</strong><small>Track submitted complaints</small>
+                            </button>
+                            <button class="action-card blue-action staff-action" data-section="manageComplaints">
+                                <span class="action-icon">⚒</span><strong>Manage Complaints</strong><small>Assign & update status</small>
+                            </button>
+                            <button class="action-card orange-action" data-section="reports">
+                                <span class="action-icon">▥</span><strong>View Reports</strong><small>View complaint reports</small>
+                            </button>
                         </div>
                     </div>
 
-                    <div class="action-grid">
-                        <button class="action-card student-action" data-section="submitComplaint">
-                            <span>＋</span><strong>Submit Complaint</strong><small>Report a maintenance issue</small>
-                        </button>
-                        <button class="action-card student-action" data-section="trackComplaints">
-                            <span>◷</span><strong>Track Complaints</strong><small>View complaint status</small>
-                        </button>
-                        <button class="action-card staff-action" data-section="manageComplaints">
-                            <span>☷</span><strong>Manage Complaints</strong><small>View and update complaints</small>
-                        </button>
-                        <button class="action-card" data-section="reports">
-                            <span>▥</span><strong>View Reports</strong><small>View complaint reports</small>
-                        </button>
+                    <div class="panel table-panel">
+                        <div class="panel-header table-heading">
+                            <div><h2>Recent Complaints</h2><p>Latest maintenance complaint information.</p></div>
+                            <button class="outline-btn" data-section="trackComplaints">View All <span>→</span></button>
+                        </div>
+                        <div class="filter-bar dashboard-filter">
+                            <div class="mini-search"><span>⌕</span><input type="text" id="dashboardSearch" placeholder="Search complaints..."></div>
+                            <select id="dashboardStatus"><option value="all">All Status</option><option value="Pending">Pending</option><option value="Ongoing">Ongoing</option><option value="Resolved">Resolved</option></select>
+                        </div>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>ID</th><th>Complaint</th><th>Category</th><th>Status</th></tr></thead>
+                                <tbody id="dashboardTable"></tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
 
-                <div class="panel">
-                    <div class="panel-header">
-                        <div><h2>Maintenance Categories</h2><p>Complaint categories</p></div>
+                <aside class="dashboard-side">
+                    <div class="panel status-panel">
+                        <div class="panel-header compact-header"><div><h2>Complaint Status</h2><p>Current status overview</p></div></div>
+                        <div class="status-overview">
+                            <div class="donut" id="statusDonut"><div><strong id="donutTotal">0</strong><span>Total</span></div></div>
+                            <div class="legend">
+                                <div><span class="legend-dot pending-dot"></span><div><strong>Pending</strong><small id="legendPending">0</small></div></div>
+                                <div><span class="legend-dot ongoing-dot"></span><div><strong>Ongoing</strong><small id="legendOngoing">0</small></div></div>
+                                <div><span class="legend-dot resolved-dot"></span><div><strong>Resolved</strong><small id="legendResolved">0</small></div></div>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="category-list">
-                        <div class="category-item"><span class="category-symbol">⚡</span><div><strong>Electrical</strong><small>Maintenance category</small></div></div>
-                        <div class="category-item"><span class="category-symbol">⌁</span><div><strong>Plumbing</strong><small>Maintenance category</small></div></div>
-                        <div class="category-item"><span class="category-symbol">◆</span><div><strong>Cleaning</strong><small>Maintenance category</small></div></div>
+                    <div class="panel category-panel">
+                        <div class="panel-header compact-header"><div><h2>Categories</h2><p>Maintenance complaint types</p></div></div>
+                        <div class="category-list">
+                            <div class="category-item"><span class="category-symbol electrical">⚡</span><div><strong>Electrical</strong><small>Lights, fans & power</small></div></div>
+                            <div class="category-item"><span class="category-symbol plumbing">◆</span><div><strong>Plumbing</strong><small>Taps, pipes & leakage</small></div></div>
+                            <div class="category-item"><span class="category-symbol cleaning">✦</span><div><strong>Cleaning</strong><small>Rooms & common areas</small></div></div>
+                        </div>
                     </div>
-                </div>
-            </div>
-
-            <div class="panel table-panel">
-                <div class="panel-header">
-                    <div><h2>Complaint Overview</h2><p>Current maintenance complaint information.</p></div>
-                    <button class="secondary-btn" data-section="trackComplaints">View All</button>
-                </div>
-
-                <div class="table-wrapper">
-                    <table>
-                        <thead><tr><th>ID</th><th>Complaint</th><th>Category</th><th>Status</th></tr></thead>
-                        <tbody id="dashboardTable"></tbody>
-                    </table>
-                </div>
+                </aside>
             </div>
         </section>
 
         <section id="submitComplaint" class="page-section">
-            <div class="page-heading">
-                <div><p class="breadcrumb">Home / Submit Complaint</p><h1>Submit Complaint</h1><p>Submit a maintenance complaint.</p></div>
-            </div>
-
+            <div class="page-heading"><div><p class="breadcrumb">HOME / SUBMIT COMPLAINT</p><h2>Submit Complaint</h2><p>Report a maintenance issue to the college maintenance team.</p></div></div>
             <div class="form-panel">
+                <div class="form-intro"><div class="form-icon">✎</div><div><h3>New Maintenance Complaint</h3><p>Please provide the complaint details below.</p></div></div>
                 <form id="complaintForm">
-                    <div class="form-group">
-                        <label for="complaintTitle">Complaint</label>
-                        <input type="text" id="complaintTitle" placeholder="Enter complaint" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="complaintCategory">Category</label>
-                        <select id="complaintCategory" required>
-                            <option value="">Select category</option>
-                            <option value="Electrical">Electrical</option>
-                            <option value="Plumbing">Plumbing</option>
-                            <option value="Cleaning">Cleaning</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="complaintDetails">Complaint Details</label>
-                        <textarea id="complaintDetails" rows="5" placeholder="Enter complaint details" required></textarea>
-                    </div>
-
-                    <button type="submit" class="primary-btn">Submit Complaint</button>
+                    <div class="form-group"><label for="complaintTitle">Complaint</label><input type="text" id="complaintTitle" placeholder="e.g. Classroom fan not working" required></div>
+                    <div class="form-group"><label for="complaintCategory">Category</label><select id="complaintCategory" required><option value="">Select category</option><option value="Electrical">Electrical</option><option value="Plumbing">Plumbing</option><option value="Cleaning">Cleaning</option></select></div>
+                    <div class="form-group"><label for="complaintDetails">Complaint Details</label><textarea id="complaintDetails" rows="5" placeholder="Describe the maintenance issue" required></textarea></div>
+                    <button type="submit" class="primary-btn">Submit Complaint <span>→</span></button>
                 </form>
             </div>
         </section>
 
         <section id="trackComplaints" class="page-section">
-            <div class="page-heading">
-                <div><p class="breadcrumb">Home / Track Complaints</p><h1>Track Complaints</h1><p>View the status of submitted complaints.</p></div>
-            </div>
-
+            <div class="page-heading"><div><p class="breadcrumb">HOME / TRACK COMPLAINTS</p><h2>Track Complaints</h2><p>View the status of your submitted complaints.</p></div></div>
             <div class="panel table-panel">
-                <div class="filter-bar">
-                    <input type="text" id="trackSearch" placeholder="Search complaints...">
-                    <select id="trackStatus">
-                        <option value="all">All Status</option>
-                        <option value="Pending">Pending</option>
-                        <option value="Ongoing">Ongoing</option>
-                        <option value="Resolved">Resolved</option>
-                    </select>
-                </div>
-
-                <div class="table-wrapper">
-                    <table>
-                        <thead><tr><th>ID</th><th>Complaint</th><th>Category</th><th>Status</th></tr></thead>
-                        <tbody id="trackTable"></tbody>
-                    </table>
-                </div>
+                <div class="filter-bar"><div class="mini-search"><span>⌕</span><input type="text" id="trackSearch" placeholder="Search complaints..."></div><select id="trackStatus"><option value="all">All Status</option><option value="Pending">Pending</option><option value="Ongoing">Ongoing</option><option value="Resolved">Resolved</option></select></div>
+                <div class="table-wrapper"><table><thead><tr><th>ID</th><th>Complaint</th><th>Category</th><th>Status</th></tr></thead><tbody id="trackTable"></tbody></table></div>
             </div>
         </section>
 
         <section id="manageComplaints" class="page-section">
-            <div class="page-heading">
-                <div><p class="breadcrumb">Home / Manage Complaints</p><h1>Manage Complaints</h1><p>View, assign, update, and resolve complaints.</p></div>
-            </div>
-
+            <div class="page-heading"><div><p class="breadcrumb">HOME / MANAGE COMPLAINTS</p><h2>Manage Complaints</h2><p>View, assign, update, and resolve maintenance complaints.</p></div></div>
             <div class="panel table-panel">
-                <div class="filter-bar">
-                    <input type="text" id="manageSearch" placeholder="Search complaints...">
-                    <select id="manageStatus">
-                        <option value="all">All Status</option>
-                        <option value="Pending">Pending</option>
-                        <option value="Ongoing">Ongoing</option>
-                        <option value="Resolved">Resolved</option>
-                    </select>
-                </div>
-
-                <div class="table-wrapper">
-                    <table>
-                        <thead><tr><th>ID</th><th>Complaint</th><th>Category</th><th>Assigned To</th><th>Status</th><th>Action</th></tr></thead>
-                        <tbody id="manageTable"></tbody>
-                    </table>
-                </div>
+                <div class="filter-bar"><div class="mini-search"><span>⌕</span><input type="text" id="manageSearch" placeholder="Search complaints..."></div><select id="manageStatus"><option value="all">All Status</option><option value="Pending">Pending</option><option value="Ongoing">Ongoing</option><option value="Resolved">Resolved</option></select></div>
+                <div class="table-wrapper"><table><thead><tr><th>ID</th><th>Complaint</th><th>Category</th><th>Assigned To</th><th>Status</th><th>Action</th></tr></thead><tbody id="manageTable"></tbody></table></div>
             </div>
         </section>
 
         <section id="categories" class="page-section">
-            <div class="page-heading">
-                <div><p class="breadcrumb">Home / Categories</p><h1>Maintenance Categories</h1><p>Organize complaints by maintenance category.</p></div>
-            </div>
-
+            <div class="page-heading"><div><p class="breadcrumb">HOME / CATEGORIES</p><h2>Maintenance Categories</h2><p>Organize maintenance complaints by category.</p></div></div>
             <div class="category-page-grid">
-                <div class="large-category-card"><span>⚡</span><h2>Electrical</h2><p>Electrical maintenance complaints.</p></div>
-                <div class="large-category-card"><span>⌁</span><h2>Plumbing</h2><p>Plumbing maintenance complaints.</p></div>
-                <div class="large-category-card"><span>◆</span><h2>Cleaning</h2><p>Cleaning maintenance complaints.</p></div>
+                <div class="large-category-card"><span class="electrical">⚡</span><h3>Electrical</h3><p>Electrical maintenance complaints.</p></div>
+                <div class="large-category-card"><span class="plumbing">◆</span><h3>Plumbing</h3><p>Plumbing maintenance complaints.</p></div>
+                <div class="large-category-card"><span class="cleaning">✦</span><h3>Cleaning</h3><p>Cleaning maintenance complaints.</p></div>
             </div>
         </section>
 
         <section id="reports" class="page-section">
-            <div class="page-heading">
-                <div><p class="breadcrumb">Home / Reports</p><h1>Maintenance Reports</h1><p>Reports of pending, ongoing, and resolved complaints.</p></div>
-            </div>
-
+            <div class="page-heading"><div><p class="breadcrumb">HOME / REPORTS</p><h2>Maintenance Reports</h2><p>View pending, ongoing, and resolved complaint reports.</p></div></div>
             <div class="report-grid">
-                <div class="report-card"><span>Pending</span><strong id="reportPending">0</strong><small>Pending complaints</small></div>
-                <div class="report-card"><span>Ongoing</span><strong id="reportOngoing">0</strong><small>Ongoing complaints</small></div>
-                <div class="report-card"><span>Resolved</span><strong id="reportResolved">0</strong><small>Resolved complaints</small></div>
+                <div class="report-card pending-report"><span>Pending</span><strong id="reportPending">0</strong><small>Pending complaints</small></div>
+                <div class="report-card ongoing-report"><span>Ongoing</span><strong id="reportOngoing">0</strong><small>Ongoing complaints</small></div>
+                <div class="report-card resolved-report"><span>Resolved</span><strong id="reportResolved">0</strong><small>Resolved complaints</small></div>
             </div>
-
-            <div class="panel table-panel">
-                <div class="panel-header"><div><h2>Complaint Report</h2><p>Complaint information by status.</p></div></div>
-                <div class="table-wrapper">
-                    <table>
-                        <thead><tr><th>ID</th><th>Complaint</th><th>Category</th><th>Status</th></tr></thead>
-                        <tbody id="reportTable"></tbody>
-                    </table>
-                </div>
-            </div>
+            <div class="panel table-panel"><div class="panel-header"><div><h2>Complaint Report</h2><p>Complaint information grouped by status.</p></div></div><div class="table-wrapper"><table><thead><tr><th>ID</th><th>Complaint</th><th>Category</th><th>Status</th></tr></thead><tbody id="reportTable"></tbody></table></div></div>
         </section>
     </main>
 </div>
-
 <script src="script.js"></script>
 </body>
 </html>
