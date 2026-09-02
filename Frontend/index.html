@@ -1,243 +1,479 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>College Maintenance Management System</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="College Complaint & Issue Reporting System" />
+  <title>CampusFix | College Complaint & Issue Reporting</title>
+
+  <!-- Font Awesome -->
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <!-- Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-<section id="loginPage" class="login-page">
-    <div class="login-orb orb-one"></div>
-    <div class="login-orb orb-two"></div>
-    <div class="login-card">
-        <div class="login-logo">CM</div>
-        <div class="eyebrow">COLLEGE MANAGEMENT</div>
-        <h1>College Maintenance</h1>
-        <p class="login-subtitle">Manage complaints. Keep your campus running smoothly.</p>
-        <form id="loginForm">
-            <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" id="username" placeholder="Enter username" required>
+  <div class="ambient ambient-one"></div>
+  <div class="ambient ambient-two"></div>
+  <div class="ambient ambient-three"></div>
+
+  <!-- LOGIN -->
+  <section id="loginPage" class="login-page">
+    <div class="login-shell glass">
+      <div class="login-visual">
+        <div class="brand-lockup">
+          <div class="brand-mark"><i class="fa-solid fa-building-columns"></i></div>
+          <div>
+            <strong>CampusFix</strong>
+            <span>College Complaint System</span>
+          </div>
+        </div>
+
+        <div class="mascot mascot-login" aria-hidden="true">
+          <div class="mascot-hat"></div>
+          <div class="mascot-head"><i class="fa-solid fa-hard-hat"></i></div>
+          <div class="mascot-body"><i class="fa-solid fa-screwdriver-wrench"></i></div>
+        </div>
+
+        <div class="login-copy">
+          <span class="eyebrow">KEEP CAMPUS RUNNING</span>
+          <h1>Report it.<br /><em>Track it.</em><br />Fix it.</h1>
+          <p>Help your campus team resolve facility issues faster with clear, trackable complaints.</p>
+        </div>
+      </div>
+
+      <div class="login-form-area">
+        <div class="mobile-brand">
+          <div class="brand-mark"><i class="fa-solid fa-building-columns"></i></div>
+          <strong>CampusFix</strong>
+        </div>
+        <span class="eyebrow">WELCOME BACK</span>
+        <h2>Sign in to your campus workspace</h2>
+        <p class="muted">Use your college credentials to continue.</p>
+
+        <form id="loginForm" class="stack-form">
+          <label>
+            Username
+            <div class="input-wrap">
+              <i class="fa-regular fa-user"></i>
+              <input id="username" type="text" placeholder="Enter your name" required />
             </div>
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" placeholder="Enter password" required>
+          </label>
+
+          <label>
+            Password
+            <div class="input-wrap">
+              <i class="fa-solid fa-lock"></i>
+              <input id="password" type="password" placeholder="Enter password" required />
+              <button type="button" class="input-action" id="togglePassword" aria-label="Show password">
+                <i class="fa-regular fa-eye"></i>
+              </button>
             </div>
-            <div class="form-group">
-                <label for="userRole">Login as</label>
-                <select id="userRole">
-                    <option value="student">Student</option>
-                    <option value="staff">Maintenance Staff</option>
-                </select>
+          </label>
+
+          <label>
+            Login as
+            <div class="input-wrap">
+              <i class="fa-solid fa-user-shield"></i>
+              <select id="userRole">
+                <option value="student">Student</option>
+                <option value="staff">Maintenance Staff</option>
+              </select>
             </div>
-            <button type="submit" class="primary-btn login-btn">Sign In <span>→</span></button>
+          </label>
+
+          <button class="btn btn-primary btn-lg" type="submit">
+            Enter Workspace <i class="fa-solid fa-arrow-right"></i>
+          </button>
         </form>
+
+        <p class="login-note"><i class="fa-solid fa-shield-halved"></i> Protected campus workspace</p>
+      </div>
     </div>
-</section>
+  </section>
 
-<div id="app" class="app hidden">
-    <aside class="sidebar">
-        <div class="brand">
-            <div class="brand-logo">CM</div>
-            <div class="brand-copy">
-                <h2>College Maintenance</h2>
-                <span>Management System</span>
-            </div>
+  <!-- APP -->
+  <div id="app" class="app hidden">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-top">
+        <div class="brand-lockup">
+          <div class="brand-mark"><i class="fa-solid fa-building-columns"></i></div>
+          <div>
+            <strong>CampusFix</strong>
+            <span>Complaint System</span>
+          </div>
         </div>
 
-        <nav class="navigation">
-            <p class="nav-title">MAIN MENU</p>
-            <button class="nav-item active" data-section="dashboard"><span class="nav-icon">▦</span>Dashboard</button>
-            <button class="nav-item" data-section="submitComplaint" id="submitNav"><span class="nav-icon">✎</span>Submit Complaint</button>
-            <button class="nav-item" data-section="trackComplaints" id="trackNav"><span class="nav-icon">▣</span>Track Complaints</button>
-            <button class="nav-item" data-section="manageComplaints" id="manageNav"><span class="nav-icon">⚒</span>Manage Complaints</button>
-            <button class="nav-item" data-section="categories"><span class="nav-icon">◈</span>Categories</button>
-            <button class="nav-item" data-section="reports"><span class="nav-icon">▥</span>Reports</button>
-        </nav>
+        <button id="closeSidebar" class="mobile-close" aria-label="Close menu">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
 
-        <div class="sidebar-message">
-            <div class="message-art"><span>⚒</span><span>✦</span></div>
-            <strong>Keep the campus<br>safe & efficient.</strong>
-            <small>Every complaint makes a difference.</small>
-        </div>
+      <nav class="nav">
+        <span class="nav-label">WORKSPACE</span>
+        <button class="nav-item active" data-section="dashboard">
+          <i class="fa-solid fa-grid-2"></i><span>Dashboard</span>
+        </button>
+        <button class="nav-item student-only" data-section="submitComplaint">
+          <i class="fa-solid fa-circle-plus"></i><span>Submit Complaint</span>
+        </button>
+        <button class="nav-item student-only" data-section="trackComplaints">
+          <i class="fa-solid fa-ticket"></i><span>My Complaints</span>
+        </button>
+        <button class="nav-item staff-only" data-section="manageComplaints">
+          <i class="fa-solid fa-screwdriver-wrench"></i><span>Manage Complaints</span>
+        </button>
+        <button class="nav-item" data-section="categories">
+          <i class="fa-solid fa-layer-group"></i><span>Categories</span>
+        </button>
+        <button class="nav-item" data-section="reports">
+          <i class="fa-solid fa-chart-column"></i><span>Reports</span>
+        </button>
+      </nav>
 
-        <div class="sidebar-user">
-            <div class="avatar" id="sidebarAvatar">S</div>
-            <div class="sidebar-user-info">
-                <strong id="sidebarName">Student</strong>
-                <span id="sidebarRole">Student</span>
-            </div>
+      <div class="sidebar-helper">
+        <div class="helper-orbit"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+        <strong>Keep campus better</strong>
+        <p>Every useful report helps your campus team act faster.</p>
+      </div>
+
+      <div class="sidebar-profile">
+        <div class="avatar" id="sidebarAvatar">S</div>
+        <div class="profile-copy">
+          <strong id="sidebarName">Student</strong>
+          <span id="sidebarRole">Student</span>
         </div>
+        <button id="logoutBtn" class="icon-btn" title="Log out" aria-label="Log out">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i>
+        </button>
+      </div>
     </aside>
 
     <main class="main-content">
-        <header class="header">
-            <div class="header-left">
-                <button class="mobile-menu" id="mobileMenu">☰</button>
-                <div class="welcome-copy">
-                    <h1>Welcome back, <span id="welcomeName">Student</span>! <span class="wave">👋</span></h1>
-                    <p>Here’s what’s happening with maintenance today.</p>
-                </div>
-            </div>
-            <div class="header-right">
-                <div class="header-search">
-                    <span>⌕</span>
-                    <input type="text" id="globalSearch" placeholder="Search complaints...">
-                </div>
-                <div class="profile-area">
-                    <div class="profile-avatar" id="headerAvatar">S</div>
-                    <div class="profile-text">
-                        <strong id="headerName">Student</strong>
-                        <span id="headerRole">Student</span>
-                    </div>
-                    <span class="profile-arrow">⌄</span>
-                </div>
-            </div>
-        </header>
+      <header class="topbar">
+        <div class="topbar-left">
+          <button id="mobileMenu" class="mobile-menu" aria-label="Open menu">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <div>
+            <span class="topbar-kicker">CAMPUS OPERATIONS</span>
+            <h2 id="pageTitle">Dashboard</h2>
+          </div>
+        </div>
 
+        <div class="topbar-actions">
+          <div class="search-box">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input id="globalSearch" type="search" placeholder="Search complaints..." />
+          </div>
+          <button id="soundToggle" class="icon-btn top-icon" title="Toggle interface sounds" aria-label="Toggle sounds">
+            <i class="fa-solid fa-volume-high"></i>
+          </button>
+          <div class="top-profile">
+            <div class="avatar" id="headerAvatar">S</div>
+            <div class="profile-copy">
+              <strong id="headerName">Student</strong>
+              <span id="headerRole">Student</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="page-wrap">
+        <!-- DASHBOARD -->
         <section id="dashboard" class="page-section active-section">
-            <div class="page-heading dashboard-heading">
-                <div>
-                    <p class="breadcrumb">HOME / DASHBOARD</p>
-                    <h2>Maintenance Overview</h2>
-                </div>
+          <div class="hero glass">
+            <div class="hero-copy">
+              <span class="eyebrow"><i class="fa-solid fa-sparkles"></i> SMART CAMPUS SUPPORT</span>
+              <h1>Welcome back, <span id="welcomeName">Student</span>!</h1>
+              <p>See what needs attention, report an issue, and keep your campus moving.</p>
+              <div class="hero-actions">
+                <button class="btn btn-primary" data-section="submitComplaint" id="heroSubmitBtn">
+                  <i class="fa-solid fa-plus"></i> Report an issue
+                </button>
+                <button class="btn btn-soft" data-section="trackComplaints" id="heroTrackBtn">
+                  <i class="fa-solid fa-route"></i> Track complaints
+                </button>
+              </div>
             </div>
 
-            <div class="summary-grid">
-                <div class="summary-card total-card">
-                    <div class="metric-icon">▣</div>
-                    <div><span>Total Complaints</span><h2 id="totalComplaints">0</h2><small>All submitted complaints</small></div>
+            <div class="hero-mascot" aria-hidden="true">
+              <div class="spark spark-one">✦</div>
+              <div class="spark spark-two">✦</div>
+              <div class="mascot">
+                <div class="mascot-head"><i class="fa-solid fa-hard-hat"></i></div>
+                <div class="mascot-body"><i class="fa-solid fa-screwdriver-wrench"></i></div>
+              </div>
+              <div class="speech-bubble"><strong>Need help?</strong><br />I'm on it! 🛠️</div>
+            </div>
+          </div>
+
+          <div class="stats-grid">
+            <article class="stat-card glass">
+              <div class="stat-icon blue"><i class="fa-solid fa-ticket"></i></div>
+              <div><span>Total Complaints</span><strong id="totalComplaints">0</strong><small>All reported issues</small></div>
+            </article>
+            <article class="stat-card glass">
+              <div class="stat-icon green"><i class="fa-solid fa-circle-check"></i></div>
+              <div><span>Resolved</span><strong id="resolvedComplaints">0</strong><small>Successfully closed</small></div>
+            </article>
+            <article class="stat-card glass">
+              <div class="stat-icon orange"><i class="fa-solid fa-stopwatch"></i></div>
+              <div><span>Avg. Resolution Time</span><strong id="avgResolution">2.4d</strong><small>Based on resolved tickets</small></div>
+            </article>
+            <article class="stat-card glass urgent-stat">
+              <div class="stat-icon red"><i class="fa-solid fa-triangle-exclamation"></i></div>
+              <div><span>High Priority</span><strong id="highPriorityComplaints">0</strong><small>Needs quick attention</small></div>
+            </article>
+          </div>
+
+          <div class="dashboard-grid">
+            <div class="main-column">
+              <section class="panel glass">
+                <div class="section-heading">
+                  <div>
+                    <span class="eyebrow">FAST ACTIONS</span>
+                    <h2>What do you need?</h2>
+                  </div>
                 </div>
-                <div class="summary-card pending-card">
-                    <div class="metric-icon">⌛</div>
-                    <div><span>Pending</span><h2 id="pendingComplaints">0</h2><small>Awaiting action</small></div>
+                <div class="quick-grid">
+                  <button class="quick-card blue-card student-action" data-section="submitComplaint">
+                    <span class="quick-icon"><i class="fa-solid fa-plus"></i></span>
+                    <strong>Report an issue</strong>
+                    <small>Tell us what's broken</small>
+                    <i class="fa-solid fa-arrow-up-right-from-square quick-arrow"></i>
+                  </button>
+                  <button class="quick-card green-card student-action" data-section="trackComplaints">
+                    <span class="quick-icon"><i class="fa-solid fa-route"></i></span>
+                    <strong>Track my complaint</strong>
+                    <small>Follow ticket progress</small>
+                    <i class="fa-solid fa-arrow-up-right-from-square quick-arrow"></i>
+                  </button>
+                  <button class="quick-card orange-card staff-action" data-section="manageComplaints">
+                    <span class="quick-icon"><i class="fa-solid fa-screwdriver-wrench"></i></span>
+                    <strong>Manage complaints</strong>
+                    <small>Update campus issues</small>
+                    <i class="fa-solid fa-arrow-up-right-from-square quick-arrow"></i>
+                  </button>
+                  <button class="quick-card purple-card" data-section="reports">
+                    <span class="quick-icon"><i class="fa-solid fa-chart-pie"></i></span>
+                    <strong>View reports</strong>
+                    <small>Review issue status</small>
+                    <i class="fa-solid fa-arrow-up-right-from-square quick-arrow"></i>
+                  </button>
                 </div>
-                <div class="summary-card ongoing-card">
-                    <div class="metric-icon">↻</div>
-                    <div><span>Ongoing</span><h2 id="ongoingComplaints">0</h2><small>Currently in progress</small></div>
+              </section>
+
+              <section class="panel glass">
+                <div class="section-heading">
+                  <div>
+                    <span class="eyebrow">RECENT ACTIVITY</span>
+                    <h2>Recent complaints</h2>
+                  </div>
+                  <button class="text-btn" data-section="trackComplaints" id="viewAllBtn">View all <i class="fa-solid fa-arrow-right"></i></button>
                 </div>
-                <div class="summary-card resolved-card">
-                    <div class="metric-icon">✓</div>
-                    <div><span>Resolved</span><h2 id="resolvedComplaints">0</h2><small>Successfully resolved</small></div>
+                <div class="table-wrap">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>ID</th>
+                        <th>Issue</th>
+                        <th>Category</th>
+                        <th>Priority</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody id="dashboardTable"></tbody>
+                  </table>
                 </div>
+              </section>
             </div>
 
-            <div class="dashboard-layout">
-                <div class="dashboard-main">
-                    <div class="panel quick-panel">
-                        <div class="panel-header compact-header">
-                            <div><h2>Quick Actions</h2><p>Access the main maintenance functions.</p></div>
-                        </div>
-                        <div class="action-grid">
-                            <button class="action-card purple-action student-action" data-section="submitComplaint">
-                                <span class="action-icon">＋</span><strong>New Complaint</strong><small>Submit a maintenance issue</small>
-                            </button>
-                            <button class="action-card green-action student-action" data-section="trackComplaints">
-                                <span class="action-icon">▣</span><strong>My Complaints</strong><small>Track submitted complaints</small>
-                            </button>
-                            <button class="action-card blue-action staff-action" data-section="manageComplaints">
-                                <span class="action-icon">⚒</span><strong>Manage Complaints</strong><small>Assign & update status</small>
-                            </button>
-                            <button class="action-card orange-action" data-section="reports">
-                                <span class="action-icon">▥</span><strong>View Reports</strong><small>View complaint reports</small>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="panel table-panel">
-                        <div class="panel-header table-heading">
-                            <div><h2>Recent Complaints</h2><p>Latest maintenance complaint information.</p></div>
-                            <button class="outline-btn" data-section="trackComplaints">View All <span>→</span></button>
-                        </div>
-                        <div class="filter-bar dashboard-filter">
-                            <div class="mini-search"><span>⌕</span><input type="text" id="dashboardSearch" placeholder="Search complaints..."></div>
-                            <select id="dashboardStatus"><option value="all">All Status</option><option value="Pending">Pending</option><option value="Ongoing">Ongoing</option><option value="Resolved">Resolved</option></select>
-                        </div>
-                        <div class="table-wrapper">
-                            <table>
-                                <thead><tr><th>ID</th><th>Complaint</th><th>Category</th><th>Status</th></tr></thead>
-                                <tbody id="dashboardTable"></tbody>
-                            </table>
-                        </div>
-                    </div>
+            <aside class="side-column">
+              <section class="panel glass status-panel">
+                <div class="section-heading compact">
+                  <div><span class="eyebrow">LIVE STATUS</span><h2>Complaint health</h2></div>
                 </div>
+                <div class="donut-area">
+                  <div class="donut" id="donutChart">
+                    <div class="donut-center"><strong id="donutTotal">0</strong><span>Total</span></div>
+                  </div>
+                </div>
+                <div class="legend">
+                  <div><span class="legend-dot pending"></span><span>Pending</span><strong id="legendPending">0</strong></div>
+                  <div><span class="legend-dot ongoing"></span><span>In Progress</span><strong id="legendOngoing">0</strong></div>
+                  <div><span class="legend-dot resolved"></span><span>Resolved</span><strong id="legendResolved">0</strong></div>
+                </div>
+              </section>
 
-                <aside class="dashboard-side">
-                    <div class="panel status-panel">
-                        <div class="panel-header compact-header"><div><h2>Complaint Status</h2><p>Current status overview</p></div></div>
-                        <div class="status-overview">
-                            <div class="donut" id="statusDonut"><div><strong id="donutTotal">0</strong><span>Total</span></div></div>
-                            <div class="legend">
-                                <div><span class="legend-dot pending-dot"></span><div><strong>Pending</strong><small id="legendPending">0</small></div></div>
-                                <div><span class="legend-dot ongoing-dot"></span><div><strong>Ongoing</strong><small id="legendOngoing">0</small></div></div>
-                                <div><span class="legend-dot resolved-dot"></span><div><strong>Resolved</strong><small id="legendResolved">0</small></div></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="panel category-panel">
-                        <div class="panel-header compact-header"><div><h2>Categories</h2><p>Maintenance complaint types</p></div></div>
-                        <div class="category-list">
-                            <div class="category-item"><span class="category-symbol electrical">⚡</span><div><strong>Electrical</strong><small>Lights, fans & power</small></div></div>
-                            <div class="category-item"><span class="category-symbol plumbing">◆</span><div><strong>Plumbing</strong><small>Taps, pipes & leakage</small></div></div>
-                            <div class="category-item"><span class="category-symbol cleaning">✦</span><div><strong>Cleaning</strong><small>Rooms & common areas</small></div></div>
-                        </div>
-                    </div>
-                </aside>
-            </div>
+              <section class="panel glass helper-panel">
+                <div class="helper-character"><i class="fa-solid fa-user-gear"></i></div>
+                <span class="eyebrow">CAMPUS HELPER</span>
+                <h2 id="helperTitle">Small report, big difference.</h2>
+                <p id="helperMessage">Include a clear location and useful details so the maintenance team can understand the issue quickly.</p>
+              </section>
+            </aside>
+          </div>
         </section>
 
+        <!-- SUBMIT -->
         <section id="submitComplaint" class="page-section">
-            <div class="page-heading"><div><p class="breadcrumb">HOME / SUBMIT COMPLAINT</p><h2>Submit Complaint</h2><p>Report a maintenance issue to the college maintenance team.</p></div></div>
-            <div class="form-panel">
-                <div class="form-intro"><div class="form-icon">✎</div><div><h3>New Maintenance Complaint</h3><p>Please provide the complaint details below.</p></div></div>
-                <form id="complaintForm">
-                    <div class="form-group"><label for="complaintTitle">Complaint</label><input type="text" id="complaintTitle" placeholder="e.g. Classroom fan not working" required></div>
-                    <div class="form-group"><label for="complaintCategory">Category</label><select id="complaintCategory" required><option value="">Select category</option><option value="Electrical">Electrical</option><option value="Plumbing">Plumbing</option><option value="Cleaning">Cleaning</option></select></div>
-                    <div class="form-group"><label for="complaintDetails">Complaint Details</label><textarea id="complaintDetails" rows="5" placeholder="Describe the maintenance issue" required></textarea></div>
-                    <button type="submit" class="primary-btn">Submit Complaint <span>→</span></button>
-                </form>
-            </div>
+          <div class="page-heading">
+            <div><span class="eyebrow">CREATE TICKET</span><h1>Report a campus issue</h1><p>Give the maintenance team the details they need to act.</p></div>
+          </div>
+
+          <div class="submit-layout">
+            <form id="complaintForm" class="panel glass complaint-form">
+              <div class="form-progress"><span class="active"></span><span></span><span></span></div>
+
+              <div class="form-section">
+                <div class="form-section-title"><span>01</span><div><h2>What is the issue?</h2><p>Choose the category that fits best.</p></div></div>
+                <div class="category-picker" id="categoryPicker">
+                  <button type="button" class="category-option" data-category="Plumbing"><i class="fa-solid fa-faucet-drip"></i><span>Plumbing</span><small>Water & taps</small></button>
+                  <button type="button" class="category-option" data-category="Electrical"><i class="fa-solid fa-bolt"></i><span>Electrical</span><small>Power & lights</small></button>
+                  <button type="button" class="category-option" data-category="Network"><i class="fa-solid fa-wifi"></i><span>Network</span><small>Wi-Fi & connectivity</small></button>
+                  <button type="button" class="category-option" data-category="Furniture"><i class="fa-solid fa-chair"></i><span>Furniture</span><small>Desks & rooms</small></button>
+                  <button type="button" class="category-option" data-category="Cleaning"><i class="fa-solid fa-broom"></i><span>Cleaning</span><small>Cleanliness</small></button>
+                </div>
+                <input type="hidden" id="complaintCategory" required />
+              </div>
+
+              <div class="form-section">
+                <div class="form-section-title"><span>02</span><div><h2>Describe the issue</h2><p>Clear details help us resolve it faster.</p></div></div>
+                <label>Short title
+                  <input id="complaintTitle" type="text" placeholder="e.g. Projector not working in Room 204" required />
+                </label>
+                <label>Location
+                  <div class="input-wrap"><i class="fa-solid fa-location-dot"></i><input id="complaintLocation" type="text" placeholder="e.g. Block A, Room 204" required /></div>
+                </label>
+                <label>Details
+                  <textarea id="complaintDetails" rows="5" placeholder="Tell us what happened, when you noticed it, and any useful details..." required></textarea>
+                </label>
+              </div>
+
+              <div class="form-section">
+                <div class="form-section-title"><span>03</span><div><h2>How urgent is it?</h2><p>Choose the level that best describes the impact.</p></div></div>
+                <div class="urgency-picker">
+                  <button type="button" class="urgency-option" data-urgency="Low"><i class="fa-solid fa-circle-info"></i><span>Low</span><small>Minor inconvenience</small></button>
+                  <button type="button" class="urgency-option selected" data-urgency="Medium"><i class="fa-solid fa-bolt"></i><span>Medium</span><small>Needs attention</small></button>
+                  <button type="button" class="urgency-option high" data-urgency="High"><i class="fa-solid fa-triangle-exclamation"></i><span>High</span><small>Urgent campus impact</small></button>
+                </div>
+                <input type="hidden" id="complaintUrgency" value="Medium" />
+              </div>
+
+              <div class="form-section">
+                <div class="form-section-title"><span>04</span><div><h2>Add evidence <small>(optional)</small></h2><p>Attach a photo to make the issue easier to understand.</p></div></div>
+                <div id="dropZone" class="drop-zone">
+                  <i class="fa-solid fa-cloud-arrow-up"></i>
+                  <strong>Drag & drop an image here</strong>
+                  <span>or <button type="button" id="browseBtn">browse from your device</button></span>
+                  <small>JPG, PNG up to 5 MB</small>
+                  <input id="evidenceInput" type="file" accept="image/png,image/jpeg" hidden />
+                  <div id="filePreview" class="file-preview hidden"></div>
+                </div>
+              </div>
+
+              <div class="form-footer">
+                <span><i class="fa-solid fa-shield-halved"></i> Your report is kept within the campus system.</span>
+                <button class="btn btn-primary" type="submit">Submit complaint <i class="fa-solid fa-paper-plane"></i></button>
+              </div>
+            </form>
+
+            <aside class="submit-side">
+              <div class="panel glass tip-card">
+                <div class="tip-icon"><i class="fa-solid fa-lightbulb"></i></div>
+                <span class="eyebrow">MAKE IT ACTIONABLE</span>
+                <h2>A great complaint has 3 things.</h2>
+                <ul>
+                  <li><i class="fa-solid fa-location-dot"></i><span><strong>Exact location</strong><small>Tell the team where to look.</small></span></li>
+                  <li><i class="fa-solid fa-align-left"></i><span><strong>Useful details</strong><small>Explain what you observed.</small></span></li>
+                  <li><i class="fa-solid fa-camera"></i><span><strong>Evidence</strong><small>A photo can clarify the problem.</small></span></li>
+                </ul>
+              </div>
+              <div class="mini-mascot">
+                <div class="mascot"><div class="mascot-head"><i class="fa-solid fa-hard-hat"></i></div><div class="mascot-body"><i class="fa-solid fa-wrench"></i></div></div>
+                <div><strong>Let's get it fixed!</strong><p>Your maintenance team is ready.</p></div>
+              </div>
+            </aside>
+          </div>
         </section>
 
+        <!-- TRACK -->
         <section id="trackComplaints" class="page-section">
-            <div class="page-heading"><div><p class="breadcrumb">HOME / TRACK COMPLAINTS</p><h2>Track Complaints</h2><p>View the status of your submitted complaints.</p></div></div>
-            <div class="panel table-panel">
-                <div class="filter-bar"><div class="mini-search"><span>⌕</span><input type="text" id="trackSearch" placeholder="Search complaints..."></div><select id="trackStatus"><option value="all">All Status</option><option value="Pending">Pending</option><option value="Ongoing">Ongoing</option><option value="Resolved">Resolved</option></select></div>
-                <div class="table-wrapper"><table><thead><tr><th>ID</th><th>Complaint</th><th>Category</th><th>Status</th></tr></thead><tbody id="trackTable"></tbody></table></div>
+          <div class="page-heading">
+            <div><span class="eyebrow">TICKET TRACKING</span><h1>My complaints</h1><p>Follow every issue from submission to resolution.</p></div>
+          </div>
+          <div class="panel glass">
+            <div class="filter-row">
+              <div class="search-box wide"><i class="fa-solid fa-magnifying-glass"></i><input id="trackSearch" placeholder="Search by ID, issue or category..." /></div>
+              <select id="trackStatus"><option value="all">All statuses</option><option value="Pending">Pending</option><option value="Ongoing">In Progress</option><option value="Resolved">Resolved</option></select>
             </div>
+            <div id="trackCards" class="ticket-list"></div>
+          </div>
         </section>
 
+        <!-- MANAGE -->
         <section id="manageComplaints" class="page-section">
-            <div class="page-heading"><div><p class="breadcrumb">HOME / MANAGE COMPLAINTS</p><h2>Manage Complaints</h2><p>View, assign, update, and resolve maintenance complaints.</p></div></div>
-            <div class="panel table-panel">
-                <div class="filter-bar"><div class="mini-search"><span>⌕</span><input type="text" id="manageSearch" placeholder="Search complaints..."></div><select id="manageStatus"><option value="all">All Status</option><option value="Pending">Pending</option><option value="Ongoing">Ongoing</option><option value="Resolved">Resolved</option></select></div>
-                <div class="table-wrapper"><table><thead><tr><th>ID</th><th>Complaint</th><th>Category</th><th>Assigned To</th><th>Status</th><th>Action</th></tr></thead><tbody id="manageTable"></tbody></table></div>
+          <div class="page-heading">
+            <div><span class="eyebrow">MAINTENANCE WORKSPACE</span><h1>Manage complaints</h1><p>Assign, update and resolve campus maintenance issues.</p></div>
+          </div>
+          <div class="panel glass">
+            <div class="filter-row">
+              <div class="search-box wide"><i class="fa-solid fa-magnifying-glass"></i><input id="manageSearch" placeholder="Search complaints..." /></div>
+              <select id="manageStatus"><option value="all">All statuses</option><option value="Pending">Pending</option><option value="Ongoing">In Progress</option><option value="Resolved">Resolved</option></select>
             </div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>ID</th><th>Issue</th><th>Category</th><th>Priority</th><th>Assigned to</th><th>Status</th><th>Action</th></tr></thead>
+                <tbody id="manageTable"></tbody>
+              </table>
+            </div>
+          </div>
         </section>
 
+        <!-- CATEGORIES -->
         <section id="categories" class="page-section">
-            <div class="page-heading"><div><p class="breadcrumb">HOME / CATEGORIES</p><h2>Maintenance Categories</h2><p>Organize maintenance complaints by category.</p></div></div>
-            <div class="category-page-grid">
-                <div class="large-category-card"><span class="electrical">⚡</span><h3>Electrical</h3><p>Electrical maintenance complaints.</p></div>
-                <div class="large-category-card"><span class="plumbing">◆</span><h3>Plumbing</h3><p>Plumbing maintenance complaints.</p></div>
-                <div class="large-category-card"><span class="cleaning">✦</span><h3>Cleaning</h3><p>Cleaning maintenance complaints.</p></div>
-            </div>
+          <div class="page-heading">
+            <div><span class="eyebrow">ISSUE TYPES</span><h1>Maintenance categories</h1><p>Choose the right category when reporting a campus issue.</p></div>
+          </div>
+          <div class="category-showcase">
+            <article class="category-showcase-card blue-accent"><div><i class="fa-solid fa-faucet-drip"></i></div><span>01</span><h2>Plumbing</h2><p>Leaks, taps, washrooms and water supply issues.</p><button data-section="submitComplaint" data-category-link="Plumbing">Report plumbing issue <i class="fa-solid fa-arrow-right"></i></button></article>
+            <article class="category-showcase-card yellow-accent"><div><i class="fa-solid fa-bolt"></i></div><span>02</span><h2>Electrical</h2><p>Lights, fans, switches and power-related problems.</p><button data-section="submitComplaint" data-category-link="Electrical">Report electrical issue <i class="fa-solid fa-arrow-right"></i></button></article>
+            <article class="category-showcase-card cyan-accent"><div><i class="fa-solid fa-wifi"></i></div><span>03</span><h2>Network</h2><p>Wi-Fi, connectivity and network access issues.</p><button data-section="submitComplaint" data-category-link="Network">Report network issue <i class="fa-solid fa-arrow-right"></i></button></article>
+            <article class="category-showcase-card violet-accent"><div><i class="fa-solid fa-chair"></i></div><span>04</span><h2>Furniture</h2><p>Desks, chairs, classroom fixtures and furniture.</p><button data-section="submitComplaint" data-category-link="Furniture">Report furniture issue <i class="fa-solid fa-arrow-right"></i></button></article>
+            <article class="category-showcase-card green-accent"><div><i class="fa-solid fa-broom"></i></div><span>05</span><h2>Cleaning</h2><p>Classroom, corridor, washroom and campus cleanliness.</p><button data-section="submitComplaint" data-category-link="Cleaning">Report cleaning issue <i class="fa-solid fa-arrow-right"></i></button></article>
+          </div>
         </section>
 
+        <!-- REPORTS -->
         <section id="reports" class="page-section">
-            <div class="page-heading"><div><p class="breadcrumb">HOME / REPORTS</p><h2>Maintenance Reports</h2><p>View pending, ongoing, and resolved complaint reports.</p></div></div>
-            <div class="report-grid">
-                <div class="report-card pending-report"><span>Pending</span><strong id="reportPending">0</strong><small>Pending complaints</small></div>
-                <div class="report-card ongoing-report"><span>Ongoing</span><strong id="reportOngoing">0</strong><small>Ongoing complaints</small></div>
-                <div class="report-card resolved-report"><span>Resolved</span><strong id="reportResolved">0</strong><small>Resolved complaints</small></div>
+          <div class="page-heading">
+            <div><span class="eyebrow">CAMPUS INSIGHTS</span><h1>Complaint reports</h1><p>Overview of pending, ongoing and resolved complaints.</p></div>
+          </div>
+          <div class="report-stats">
+            <div class="report-stat glass"><span>Pending</span><strong id="reportPending">0</strong><small>Awaiting action</small></div>
+            <div class="report-stat glass"><span>In Progress</span><strong id="reportOngoing">0</strong><small>Currently being handled</small></div>
+            <div class="report-stat glass"><span>Resolved</span><strong id="reportResolved">0</strong><small>Successfully completed</small></div>
+          </div>
+          <div class="panel glass">
+            <div class="section-heading"><div><span class="eyebrow">REPORT DATA</span><h2>Complaint overview</h2></div></div>
+            <div class="table-wrap">
+              <table><thead><tr><th>ID</th><th>Issue</th><th>Category</th><th>Priority</th><th>Status</th></tr></thead><tbody id="reportTable"></tbody></table>
             </div>
-            <div class="panel table-panel"><div class="panel-header"><div><h2>Complaint Report</h2><p>Complaint information grouped by status.</p></div></div><div class="table-wrapper"><table><thead><tr><th>ID</th><th>Complaint</th><th>Category</th><th>Status</th></tr></thead><tbody id="reportTable"></tbody></table></div></div>
+          </div>
         </section>
+      </div>
     </main>
-</div>
-<script src="script.js"></script>
+  </div>
+
+  <div id="toastContainer" class="toast-container"></div>
+  <script src="script.js"></script>
 </body>
 </html>
