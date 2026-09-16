@@ -1,12 +1,12 @@
 let complaints = [
-  {id:"CMP-001",title:"Flickering lights in Room 101",category:"Electrical",location:"Block A, Room 101",priority:"High",status:"Pending",assignedTo:"-",created:"Today"},
-  {id:"CMP-002",title:"Leaking tap in washroom",category:"Plumbing",location:"Block B, First Floor",priority:"Medium",status:"Ongoing",assignedTo:"Maintenance Staff",created:"Yesterday"},
-  {id:"CMP-003",title:"Classroom fan not working",category:"Electrical",location:"Block A, Room 204",priority:"High",status:"Ongoing",assignedTo:"Maintenance Staff",created:"2 days ago"},
-  {id:"CMP-004",title:"Corridor needs cleaning",category:"Cleaning",location:"Block C, Ground Floor",priority:"Low",status:"Resolved",assignedTo:"Maintenance Staff",created:"3 days ago"},
-  {id:"CMP-005",title:"Dripping pipe in laboratory",category:"Plumbing",location:"Science Block, Lab 2",priority:"Medium",status:"Pending",assignedTo:"-",created:"4 days ago"},
-  {id:"CMP-006",title:"Campus Wi-Fi unavailable",category:"Network",location:"Library, Second Floor",priority:"High",status:"Resolved",assignedTo:"Maintenance Staff",created:"5 days ago"},
-  {id:"CMP-007",title:"Broken chair in classroom",category:"Furniture",location:"Block B, Room 108",priority:"Low",status:"Pending",assignedTo:"-",created:"6 days ago"},
-  {id:"CMP-008",title:"Washroom cleaning required",category:"Cleaning",location:"Block A, Ground Floor",priority:"Medium",status:"Resolved",assignedTo:"Maintenance Staff",created:"1 week ago"}
+  {id:"CMP-001",title:"Flickering lights in Room 101",category:"Electrical",location:"Block A, Room 101",priority:"High",status:"Pending",assignedTo:"-",created:"Today",details:"Lights continuously flicker and buzz during class.",evidence:"",createdBy:"Student"},
+  {id:"CMP-002",title:"Leaking tap in washroom",category:"Plumbing",location:"Block B, First Floor",priority:"Medium",status:"Ongoing",assignedTo:"Maintenance Staff",created:"Yesterday",details:"Tap in restroom 2B does not shut off completely.",evidence:"",createdBy:"Student"},
+  {id:"CMP-003",title:"Classroom fan not working",category:"Electrical",location:"Block A, Room 204",priority:"High",status:"Ongoing",assignedTo:"Maintenance Staff",created:"2 days ago",details:"Ceiling fan in row 3 stopped spinning.",evidence:"",createdBy:"Student"},
+  {id:"CMP-004",title:"Corridor needs cleaning",category:"Cleaning",location:"Block C, Ground Floor",priority:"Low",status:"Resolved",assignedTo:"Maintenance Staff",created:"3 days ago",details:"Spilled liquid near laboratory entrance.",evidence:"",createdBy:"Student"},
+  {id:"CMP-005",title:"Dripping pipe in laboratory",category:"Plumbing",location:"Science Block, Lab 2",priority:"Medium",status:"Pending",assignedTo:"-",created:"4 days ago",details:"Under-sink pipe has a steady drip.",evidence:"",createdBy:"Student"},
+  {id:"CMP-006",title:"Campus Wi-Fi unavailable",category:"Network",location:"Library, Second Floor",priority:"High",status:"Resolved",assignedTo:"Maintenance Staff",created:"5 days ago",details:"Router in reading room was offline.",evidence:"",createdBy:"Student"},
+  {id:"CMP-007",title:"Broken chair in classroom",category:"Furniture",location:"Block B, Room 108",priority:"Low",status:"Pending",assignedTo:"-",created:"6 days ago",details:"Armrest and back bracket loose.",evidence:"",createdBy:"Student"},
+  {id:"CMP-008",title:"Washroom cleaning required",category:"Cleaning",location:"Block A, Ground Floor",priority:"Medium",status:"Resolved",assignedTo:"Maintenance Staff",created:"1 week ago",details:"General cleaning and hygiene refresh needed.",evidence:"",createdBy:"Student"}
 ];
 
 let currentUser = {name:"Student", role:"student"};
@@ -84,20 +84,50 @@ document.querySelectorAll("[data-section]").forEach(btn=>{
   });
 });
 
-$("loginForm").addEventListener("submit",e=>{
+async function loadComplaintsFromBackend(){
+  try{
+    const res = await fetch("/api/complaints");
+    if(res.ok){
+      const data = await res.json();
+      if(Array.isArray(data) && data.length > 0){
+        complaints = data;
+        updateAll();
+      }
+    }
+  }catch(err){
+    console.warn("Using local complaints dataset:", err);
+  }
+}
+
+$("loginForm").addEventListener("submit",async e=>{
   e.preventDefault();
   const username=$("username").value.trim();
+  const password=$("password").value;
+  const role=$("userRole").value;
   if(!username) return;
-  currentUser={name:username,role:$("userRole").value};
+
+  currentUser={name:username,role:role};
   updateUserUI(); configureRole();
   $("loginPage").classList.add("hidden"); $("app").classList.remove("hidden");
   showSection("dashboard"); updateAll();
   playSound("success");
   toast("Welcome to CampusFix",`Signed in as ${currentUser.role==="student"?"Student":"Maintenance Staff"}.`,"fa-hand-wave");
+
+  // Sync login with backend
+  try{
+    await fetch("/api/auth/login", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({username, password, role})
+    });
+    loadComplaintsFromBackend();
+  }catch(err){
+    console.warn("Backend auth call completed locally:", err);
+  }
 });
 
 $("togglePassword").addEventListener("click",()=>{
-  const input=$("password"), icon=$("togglePassword i");
+  const input=$("password");
   input.type=input.type==="password"?"text":"password";
   $("togglePassword").innerHTML=`<i class="fa-regular ${input.type==="password"?"fa-eye":"fa-eye-slash"}"></i>`;
 });
@@ -126,7 +156,7 @@ function priorityBadge(priority){
 function filteredList(search="",status="all"){
   const q=search.toLowerCase();
   return complaints.filter(c=>{
-    const matches=!q || [c.id,c.title,c.category,c.location].some(v=>v.toLowerCase().includes(q));
+    const matches=!q || [c.id,c.title,c.category,c.location].some(v=>v && v.toLowerCase().includes(q));
     return matches && (status==="all" || c.status===status);
   });
 }
@@ -163,7 +193,6 @@ function renderTrack(){
 }
 
 function ticketCard(c,i){
-  const states=["Pending","Ongoing","Resolved"];
   const current=c.status==="Pending"?0:c.status==="Ongoing"?2:3;
   const progress=current===0?0:current===2?58:100;
   const steps=["Submitted","Under Review","In Progress","Resolved"];
@@ -189,14 +218,39 @@ function renderReport(){
   $("reportTable").innerHTML=complaints.map(c=>`<tr><td>${c.id}</td><td>${c.title}</td><td>${c.category}</td><td>${priorityBadge(c.priority)}</td><td>${statusBadge(c.status)}</td></tr>`).join("");
 }
 
-function updateComplaint(id){
+async function updateComplaint(id){
   const c=complaints.find(x=>x.id===id);
   if(!c)return;
-  if(c.status==="Pending"){c.status="Ongoing";c.assignedTo="Maintenance Staff"}
-  else if(c.status==="Ongoing"){c.status="Resolved"}
-  else {c.status="Pending";c.assignedTo="-"}
-  updateAll(); playSound("success");
+
+  let nextStatus="Pending";
+  let nextAssigned="-";
+  if(c.status==="Pending"){
+    nextStatus="Ongoing";
+    nextAssigned="Maintenance Staff";
+  }else if(c.status==="Ongoing"){
+    nextStatus="Resolved";
+    nextAssigned="Maintenance Staff";
+  }else{
+    nextStatus="Pending";
+    nextAssigned="-";
+  }
+
+  c.status=nextStatus;
+  c.assignedTo=nextAssigned;
+  updateAll();
+  playSound("success");
   toast("Complaint updated",`${id} is now ${c.status==="Ongoing"?"In Progress":c.status}.`,"fa-screwdriver-wrench");
+
+  // Persist to backend / Supabase
+  try{
+    await fetch(`/api/complaints/${id}`, {
+      method: "PATCH",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({status: nextStatus, assignedTo: nextAssigned})
+    });
+  }catch(err){
+    console.warn("Update applied locally:", err);
+  }
 }
 
 function updateAll(){
@@ -214,19 +268,65 @@ document.querySelectorAll(".urgency-option").forEach(btn=>btn.addEventListener("
   btn.classList.add("selected"); $("complaintUrgency").value=btn.dataset.urgency; playSound();
 }));
 
-$("complaintForm").addEventListener("submit",e=>{
+$("complaintForm").addEventListener("submit",async e=>{
   e.preventDefault();
-  if(!$("complaintCategory").value){toast("Choose a category","Please select the issue category first.","fa-circle-exclamation");return}
+  if(!$("complaintCategory").value){
+    toast("Choose a category","Please select the issue category first.","fa-circle-exclamation");
+    return;
+  }
   const title=$("complaintTitle").value.trim(), location=$("complaintLocation").value.trim(), details=$("complaintDetails").value.trim();
   if(!title||!location||!details)return;
+
   const id=`CMP-${String(complaints.length+1).padStart(3,"0")}`;
-  complaints.unshift({id,title,category:$("complaintCategory").value,location,priority:$("complaintUrgency").value,status:"Pending",assignedTo:"-",created:"Just now",details,evidence:selectedFile?.name||""});
-  e.target.reset(); selectedFile=null; $("complaintCategory").value=""; $("complaintUrgency").value="Medium";
+  const newComplaint = {
+    id,
+    title,
+    category:$("complaintCategory").value,
+    location,
+    priority:$("complaintUrgency").value,
+    status:"Pending",
+    assignedTo:"-",
+    created:"Just now",
+    details,
+    evidence:selectedFile?.name||"",
+    createdBy: currentUser.name
+  };
+
+  // Optimistic local update
+  complaints.unshift(newComplaint);
+  e.target.reset();
+  selectedFile=null;
+  $("complaintCategory").value="";
+  $("complaintUrgency").value="Medium";
   document.querySelectorAll(".category-option").forEach(b=>b.classList.remove("selected"));
   document.querySelectorAll(".urgency-option").forEach(b=>b.classList.toggle("selected",b.dataset.urgency==="Medium"));
-  $("filePreview").classList.add("hidden"); $("filePreview").textContent="";
-  updateAll(); showSection("trackComplaints"); $("trackSearch").value=id; renderTrack();
-  playSound("success"); toast("Complaint submitted",`${id} has been added and is pending review.`,"fa-circle-check");
+  $("filePreview").classList.add("hidden");
+  $("filePreview").textContent="";
+  updateAll();
+  showSection("trackComplaints");
+  $("trackSearch").value=id;
+  renderTrack();
+  playSound("success");
+  toast("Complaint submitted",`${id} has been added and is pending review.`,"fa-circle-check");
+
+  // Persist to backend / Supabase
+  try{
+    const res = await fetch("/api/complaints", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify(newComplaint)
+    });
+    if(res.ok){
+      const saved = await res.json();
+      const idx = complaints.findIndex(c => c.id === id);
+      if(idx !== -1 && saved){
+        complaints[idx] = saved;
+        updateAll();
+      }
+    }
+  }catch(err){
+    console.warn("Complaint queued locally, sync pending:", err);
+  }
 });
 
 ["trackSearch","trackStatus"].forEach(id=>$(id).addEventListener(id==="trackSearch"?"input":"change",renderTrack));
@@ -238,7 +338,8 @@ $("globalSearch").addEventListener("input",e=>{
   const target=currentUser.role==="student"?"trackComplaints":"manageComplaints";
   showSection(target);
   const field=currentUser.role==="student"?$("trackSearch"):$("manageSearch");
-  field.value=q; currentUser.role==="student"?renderTrack():renderManage();
+  field.value=q;
+  currentUser.role==="student"?renderTrack():renderManage();
 });
 
 $("browseBtn").addEventListener("click",()=>$("evidenceInput").click());
@@ -249,12 +350,23 @@ $("dropZone").addEventListener("drop",e=>handleFile(e.dataTransfer.files[0]));
 
 function handleFile(file){
   if(!file)return;
-  if(!["image/jpeg","image/png"].includes(file.type)){toast("Unsupported file","Please choose a JPG or PNG image.","fa-file-circle-exclamation");return}
-  if(file.size>5*1024*1024){toast("File too large","Please choose an image under 5 MB.","fa-file-circle-exclamation");return}
-  selectedFile=file; $("filePreview").classList.remove("hidden"); $("filePreview").innerHTML=`<i class="fa-solid fa-image"></i> ${file.name} — ${(file.size/1024/1024).toFixed(2)} MB`;
+  if(!["image/jpeg","image/png"].includes(file.type)){
+    toast("Unsupported file","Please choose a JPG or PNG image.","fa-file-circle-exclamation");
+    return;
+  }
+  if(file.size>5*1024*1024){
+    toast("File too large","Please choose an image under 5 MB.","fa-file-circle-exclamation");
+    return;
+  }
+  selectedFile=file;
+  $("filePreview").classList.remove("hidden");
+  $("filePreview").innerHTML=`<i class="fa-solid fa-image"></i> ${file.name} — ${(file.size/1024/1024).toFixed(2)} MB`;
   playSound();
 }
 
 $("helperMessage").textContent="Include a clear location and useful details so the maintenance team can understand the issue quickly.";
 
-updateUserUI(); configureRole(); updateAll();
+updateUserUI();
+configureRole();
+updateAll();
+loadComplaintsFromBackend();
