@@ -7,7 +7,9 @@
     "dev": "node server.js",
     "build": "node -e \"const fs=require('fs'); fs.mkdirSync('dist',{recursive:true}); fs.cpSync('Frontend','dist',{recursive:true});\"",
     "start": "node server.js",
-    "lint": "node --check server.js && node --check src/db/supabase.js && node --check Frontend/script.js"
+    "test": "node --test tests/system.test.js",
+    "db:migrate": "node supabase/migrate.js",
+    "lint": "node --check server.js && node --check src/db/supabase.js && node --check supabase/migrate.js && node --check tests/system.test.js && node --check Frontend/script.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.116.0",

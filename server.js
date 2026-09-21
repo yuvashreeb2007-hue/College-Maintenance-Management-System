@@ -2,12 +2,23 @@ import express from "express";
 import path from "path";
 import fs from "fs";
 import { fileURLToPath } from "url";
+
+// Load .env credentials if present
+if (fs.existsSync(".env")) {
+  try {
+    process.loadEnvFile(".env");
+  } catch (e) {}
+}
+
 import {
   getComplaints,
   createComplaint,
   updateComplaint,
   authenticateUser,
-  isSupabaseConfigured
+  getCategories,
+  getReports,
+  isSupabaseConfigured,
+  getDatabaseStatus
 } from "./src/db/supabase.js";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -25,15 +36,28 @@ app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
 // Database and Service Health Check
 app.get("/api/health", (req, res) => {
+  const dbStatus = getDatabaseStatus();
   res.json({
     status: "healthy",
-    database: isSupabaseConfigured() ? "Supabase PostgreSQL (Connected)" : "In-Memory Fallback (Pending Supabase credentials)",
-    supabaseConfigured: isSupabaseConfigured(),
+    database: dbStatus.configured ? "Supabase PostgreSQL (Connected)" : "In-Memory Fallback (Pending Supabase credentials)",
+    supabaseConfigured: dbStatus.configured,
+    supabaseUrl: dbStatus.url,
     timestamp: new Date().toISOString()
   });
 });
 
-// Authentication
+// FR-05: Maintenance categories
+app.get("/api/categories", async (req, res) => {
+  try {
+    const categories = await getCategories();
+    res.json(categories);
+  } catch (err) {
+    console.error("Error fetching categories:", err);
+    res.status(500).json({ error: "Failed to fetch categories" });
+  }
+});
+
+// FR-01: Authentication (Student and Staff Login)
 app.post("/api/auth/login", async (req, res) => {
   try {
     const { username, password, role } = req.body;
@@ -48,7 +72,7 @@ app.post("/api/auth/login", async (req, res) => {
   }
 });
 
-// Get all complaints
+// FR-03 & FR-04: Get all complaints
 app.get("/api/complaints", async (req, res) => {
   try {
     const complaints = await getComplaints();
@@ -59,7 +83,7 @@ app.get("/api/complaints", async (req, res) => {
   }
 });
 
-// Create a new complaint
+// FR-02: Create a new maintenance complaint
 app.post("/api/complaints", async (req, res) => {
   try {
     const { title, category, location, priority, details, evidence, createdBy } = req.body;
@@ -67,7 +91,6 @@ app.post("/api/complaints", async (req, res) => {
       return res.status(400).json({ error: "Title, category, and location are required." });
     }
 
-    // Generate consecutive ID
     const currentComplaints = await getComplaints();
     const nextNum = currentComplaints.length + 1;
     const id = req.body.id || `CMP-${String(nextNum).padStart(3, "0")}`;
@@ -93,7 +116,7 @@ app.post("/api/complaints", async (req, res) => {
   }
 });
 
-// Update complaint status / assignment
+// FR-04: Update complaint status / assignment
 app.patch("/api/complaints/:id", async (req, res) => {
   try {
     const { id } = req.params;
@@ -106,6 +129,17 @@ app.patch("/api/complaints/:id", async (req, res) => {
   } catch (err) {
     console.error(`Error updating complaint ${req.params.id}:`, err);
     res.status(500).json({ error: "Failed to update complaint" });
+  }
+});
+
+// FR-06: Maintenance reports
+app.get("/api/reports", async (req, res) => {
+  try {
+    const reports = await getReports();
+    res.json(reports);
+  } catch (err) {
+    console.error("Error generating reports:", err);
+    res.status(500).json({ error: "Failed to generate reports" });
   }
 });
 
@@ -122,7 +156,13 @@ app.get("*", (req, res) => {
   res.sendFile(path.join(staticDir, "index.html"));
 });
 
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`CampusFix server running on http://0.0.0.0:${PORT}`);
-  console.log(`Database target: ${isSupabaseConfigured() ? "Supabase PostgreSQL" : "In-Memory Fallback"}`);
-});
+export { app };
+
+const isMainModule = process.argv[1] && path.resolve(process.argv[1]) === path.resolve(__filename);
+
+if (isMainModule) {
+  app.listen(PORT, "0.0.0.0", () => {
+    console.log(`CampusFix server running on http://0.0.0.0:${PORT}`);
+    console.log(`Database target: ${isSupabaseConfigured() ? "Supabase PostgreSQL" : "In-Memory Fallback"}`);
+  });
+}
