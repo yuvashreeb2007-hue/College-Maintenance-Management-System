@@ -315,6 +315,10 @@ function handleAuthSuccess(data, rememberMe) {
   } else {
     sessionStorage.setItem("campusfix_token", sessionToken);
   }
+  // Store user info in localStorage for offline caching support
+  try {
+    localStorage.setItem("campusfix_user", JSON.stringify(currentUser));
+  } catch (e) {}
 
   // Switch to App Workspace
   $("loginPage").classList.add("hidden");
@@ -495,6 +499,7 @@ async function performLogout() {
   currentRole = null;
   sessionStorage.removeItem("campusfix_token");
   localStorage.removeItem("campusfix_token");
+  localStorage.removeItem("campusfix_user");
 
   $("app").classList.add("hidden");
   $("loginPage").classList.remove("hidden");
@@ -1730,19 +1735,41 @@ document.querySelectorAll(".close-modal-btn").forEach(btn => {
   });
 });
 
+// Sidebar Mobile Drawer Toggle & Backdrop
+function openMobileSidebar() {
+  const sb = $("sidebar");
+  const bd = $("sidebarBackdrop");
+  if (sb) sb.classList.add("open");
+  if (bd) bd.classList.remove("hidden");
+  document.body.classList.add("sidebar-open-lock");
+}
+
+function closeMobileSidebar() {
+  const sb = $("sidebar");
+  const bd = $("sidebarBackdrop");
+  if (sb) sb.classList.remove("open");
+  if (bd) bd.classList.add("hidden");
+  document.body.classList.remove("sidebar-open-lock");
+}
+
 // Navigation Click Handlers
 document.querySelectorAll(".nav-item, [data-section]").forEach(el => {
   el.addEventListener("click", e => {
     const sec = el.dataset.section;
     if (sec) {
       showSection(sec);
+      // Auto close sidebar on mobile if clicked
+      if (window.innerWidth <= 850) {
+        closeMobileSidebar();
+      }
     }
   });
 });
 
 // Sidebar Mobile Toggle
-$("mobileMenu").addEventListener("click", () => $("sidebar").classList.add("open"));
-$("closeSidebar").addEventListener("click", () => $("sidebar").classList.remove("open"));
+if ($("mobileMenu")) $("mobileMenu").addEventListener("click", openMobileSidebar);
+if ($("closeSidebar")) $("closeSidebar").addEventListener("click", closeMobileSidebar);
+if ($("sidebarBackdrop")) $("sidebarBackdrop").addEventListener("click", closeMobileSidebar);
 
 // Sound Toggle
 $("soundToggle").addEventListener("click", () => {
@@ -2396,17 +2423,252 @@ async function checkExistingSession() {
       const data = await res.json();
       currentUser = data.user;
       currentRole = data.user.role;
+      try {
+        localStorage.setItem("campusfix_user", JSON.stringify(currentUser));
+      } catch (e) {}
       $("loginPage").classList.add("hidden");
       $("app").classList.remove("hidden");
       configureRoleWorkspace();
       await loadRoleDashboardData();
       await updateNotificationBadges();
       initAiChat();
+      handlePwaUrlAction();
     } else {
       performLogout();
     }
   } catch (err) {
+    // Offline resilience: Check if cached user exists in localStorage
+    const cachedUser = localStorage.getItem("campusfix_user");
+    if (cachedUser && sessionToken) {
+      try {
+        currentUser = JSON.parse(cachedUser);
+        currentRole = currentUser.role;
+        $("loginPage").classList.add("hidden");
+        $("app").classList.remove("hidden");
+        configureRoleWorkspace();
+        await loadRoleDashboardData();
+        initAiChat();
+        handlePwaUrlAction();
+        toast("Offline Cache Active", `Operating offline as ${currentUser.name}. Cached data is displayed.`, "fa-database");
+        return;
+      } catch (parseErr) {}
+    }
     performLogout();
+  }
+}
+
+// =============================================================================
+// PROGRESSIVE WEB APP (PWA) ENGINE: SERVICE WORKER, INSTALLATION & OFFLINE
+// =============================================================================
+
+let deferredInstallPrompt = null;
+const isIosDevice = /iphone|ipad|ipod/.test(navigator.userAgent.toLowerCase()) && !window.MSStream;
+const isStandaloneApp = window.matchMedia('(display-mode: standalone)').matches ||
+                        window.navigator.standalone === true ||
+                        document.referrer.includes('android-app://');
+
+// Initialize Standalone App Ergonomics
+function initStandaloneMode() {
+  if (isStandaloneApp) {
+    document.body.classList.add('standalone-mode');
+    console.log('[CampusFix PWA] Running in Standalone Display Mode');
+    hidePwaInstallTriggers();
+  }
+}
+
+// 1. Service Worker Registration
+function initServiceWorker() {
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js', { scope: '/' })
+        .then(registration => {
+          console.log('[CampusFix PWA] Service Worker registered with scope:', registration.scope);
+
+          // Listen for available updates
+          registration.addEventListener('updatefound', () => {
+            const newWorker = registration.installing;
+            if (newWorker) {
+              newWorker.addEventListener('statechange', () => {
+                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                  toast('Update Available', 'A new version of CampusFix is ready. Reload to update.', 'fa-arrows-rotate');
+                }
+              });
+            }
+          });
+        })
+        .catch(err => {
+          console.warn('[CampusFix PWA] Service Worker registration failed:', err);
+        });
+    });
+  }
+}
+
+// 2. Online / Offline Network Status Monitoring
+function initNetworkStatusMonitoring() {
+  const offlineIndicator = $('offlineIndicator');
+
+  function updateOnlineStatus() {
+    if (navigator.onLine) {
+      if (offlineIndicator) offlineIndicator.classList.add('hidden');
+      document.body.classList.remove('offline-active');
+      toast('Connection Restored', 'Back online. Syncing latest complaints and reports.', 'fa-wifi');
+      if (currentUser) {
+        loadRoleDashboardData();
+        updateNotificationBadges();
+      }
+    } else {
+      if (offlineIndicator) offlineIndicator.classList.remove('hidden');
+      document.body.classList.add('offline-active');
+      toast('Offline Mode Active', 'Operating with cached campus maintenance data.', 'fa-plane-slash');
+    }
+  }
+
+  window.addEventListener('online', updateOnlineStatus);
+  window.addEventListener('offline', updateOnlineStatus);
+
+  if (!navigator.onLine && offlineIndicator) {
+    offlineIndicator.classList.remove('hidden');
+    document.body.classList.add('offline-active');
+  }
+}
+
+// 3. PWA Installation Triggers (Android, Chrome, Edge, Safari iOS)
+function showPwaInstallTriggers() {
+  if (isStandaloneApp) return;
+
+  const topbarBtn = $('pwaInstallTopbarBtn');
+  const sidebarBtn = $('pwaSidebarInstallBtn');
+  const loginBox = $('pwaLoginInstallBox');
+  const banner = $('pwaInstallBanner');
+
+  if (topbarBtn) topbarBtn.classList.remove('hidden');
+  if (sidebarBtn) sidebarBtn.classList.remove('hidden');
+  if (loginBox) loginBox.classList.remove('hidden');
+
+  // Show floating prompt banner if not previously dismissed in this session
+  if (banner && !sessionStorage.getItem('campusfix_pwa_banner_dismissed')) {
+    banner.classList.remove('hidden');
+  }
+}
+
+function hidePwaInstallTriggers() {
+  const topbarBtn = $('pwaInstallTopbarBtn');
+  const sidebarBtn = $('pwaSidebarInstallBtn');
+  const loginBox = $('pwaLoginInstallBox');
+  const banner = $('pwaInstallBanner');
+
+  if (topbarBtn) topbarBtn.classList.add('hidden');
+  if (sidebarBtn) sidebarBtn.classList.add('hidden');
+  if (loginBox) loginBox.classList.add('hidden');
+  if (banner) banner.classList.add('hidden');
+}
+
+async function triggerPwaInstall() {
+  if (deferredInstallPrompt) {
+    deferredInstallPrompt.prompt();
+    const { outcome } = await deferredInstallPrompt.userChoice;
+    if (outcome === 'accepted') {
+      toast('Installing CampusFix', 'CampusFix is being added to your device...', 'fa-download');
+      hidePwaInstallTriggers();
+    }
+    deferredInstallPrompt = null;
+  } else if (isIosDevice) {
+    openIosInstallModal();
+  } else {
+    // Desktop Chrome/Edge or already prompted
+    toast('Install CampusFix', 'Use your browser address bar icon (⊕ or ⬇) or menu (⋮) -> "Install CampusFix".', 'fa-desktop');
+  }
+}
+
+function openIosInstallModal() {
+  const modal = $('iosInstallModal');
+  if (modal) modal.classList.remove('hidden');
+}
+
+function closeIosInstallModal() {
+  const modal = $('iosInstallModal');
+  if (modal) modal.classList.add('hidden');
+}
+
+function initPwaInstallListeners() {
+  // Capture native browser install prompt (Chrome Android, Edge, Desktop Chrome)
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredInstallPrompt = e;
+    showPwaInstallTriggers();
+  });
+
+  // Native App Installed Event
+  window.addEventListener('appinstalled', () => {
+    deferredInstallPrompt = null;
+    hidePwaInstallTriggers();
+    toast('Installation Complete', 'CampusFix is now installed! You can launch it from your home screen.', 'fa-circle-check');
+  });
+
+  // Bind all install action buttons
+  const triggerIds = [
+    'pwaInstallTopbarBtn',
+    'pwaSidebarInstallBtn',
+    'pwaLoginInstallBtn',
+    'pwaBannerInstallBtn'
+  ];
+
+  triggerIds.forEach(id => {
+    const el = $(id);
+    if (el) {
+      el.addEventListener('click', (e) => {
+        e.preventDefault();
+        triggerPwaInstall();
+      });
+    }
+  });
+
+  // Banner dismiss button
+  const dismissBtn = $('pwaBannerDismissBtn');
+  if (dismissBtn) {
+    dismissBtn.addEventListener('click', () => {
+      const banner = $('pwaInstallBanner');
+      if (banner) banner.classList.add('hidden');
+      sessionStorage.setItem('campusfix_pwa_banner_dismissed', 'true');
+    });
+  }
+
+  // iOS Guide Modal Close buttons
+  const closeIosBtn = $('closeIosInstallModal');
+  const dismissIosBtn = $('dismissIosInstallBtn');
+  if (closeIosBtn) closeIosBtn.addEventListener('click', closeIosInstallModal);
+  if (dismissIosBtn) dismissIosBtn.addEventListener('click', closeIosInstallModal);
+
+  // If on iOS and not standalone, show install options so users can view the guide
+  if (isIosDevice && !isStandaloneApp) {
+    showPwaInstallTriggers();
+  }
+}
+
+// 4. Handle PWA Action Shortcuts (e.g. ?action=report, ?action=complaints)
+function handlePwaUrlAction() {
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const action = params.get('action');
+    if (!action) return;
+
+    if (action === 'report') {
+      if (currentRole === 'student') {
+        navigateToSection('submitComplaint');
+      }
+    } else if (action === 'complaints') {
+      if (currentRole === 'student') {
+        navigateToSection('studentComplaints');
+      } else if (currentRole === 'worker') {
+        navigateToSection('workerAssigned');
+      } else if (currentRole === 'admin') {
+        navigateToSection('adminComplaints');
+      }
+    } else if (action === 'chat') {
+      openAiChat();
+    }
+  } catch (e) {
+    console.warn('[CampusFix PWA] Error handling URL action shortcut:', e);
   }
 }
 
@@ -2414,6 +2676,10 @@ async function checkExistingSession() {
 initAuthUI();
 initStarRatingSelector();
 initAiChat();
+initStandaloneMode();
+initServiceWorker();
+initNetworkStatusMonitoring();
+initPwaInstallListeners();
 checkExistingSession();
 
 // Periodic Notification Badge Polling

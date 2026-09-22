@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="50%" stop-color="#1e293b" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2563eb" />
+      <stop offset="100%" stop-color="#1d4ed8" />
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#60a5fa" />
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#000000" flood-opacity="0.4" />
+    </filter>
+  </defs>
+
+  <!-- Background rounded canvas -->
+  <rect width="512" height="512" rx="112" fill="url(#bgGrad)" />
+
+  <!-- Outer ambient glow ring -->
+  <rect x="24" y="24" width="464" height="464" rx="92" fill="none" stroke="rgba(255, 255, 255, 0.08)" stroke-width="2" />
+
+  <!-- Shield Badge -->
+  <path d="M 256,76 
+           C 340,76 410,104 410,104 
+           C 410,248 376,368 256,432 
+           C 136,368 102,248 102,104 
+           C 102,104 172,76 256,76 Z" 
+        fill="url(#shieldGrad)" 
+        filter="url(#shadow)" />
+
+  <!-- Shield Inner Border Highlight -->
+  <path d="M 256,92 
+           C 328,92 392,118 392,118 
+           C 392,242 360,350 256,410 
+           C 152,350 120,242 120,118 
+           C 120,118 184,92 256,92 Z" 
+        fill="none" 
+        stroke="rgba(255, 255, 255, 0.22)" 
+        stroke-width="3" />
+
+  <!-- Campus Building Classical Columns -->
+  <!-- Pediment (Roof Triangle) -->
+  <polygon points="256,134 164,184 348,184" fill="#ffffff" />
+  <!-- Entablature (Roof Beam) -->
+  <rect x="156" y="188" width="200" height="14" rx="3" fill="#ffffff" />
+
+  <!-- Columns (3 Pillars) -->
+  <rect x="178" y="208" width="22" height="96" rx="4" fill="#ffffff" />
+  <rect x="245" y="208" width="22" height="96" rx="4" fill="#ffffff" />
+  <rect x="312" y="208" width="22" height="96" rx="4" fill="#ffffff" />
+
+  <!-- Base Steps -->
+  <rect x="150" y="310" width="212" height="14" rx="3" fill="#ffffff" />
+  <rect x="138" y="328" width="236" height="16" rx="4" fill="#ffffff" />
+
+  <!-- Repair Wrench & Sparkle Badge overlay -->
+  <g transform="translate(290, 240)">
+    <!-- Glow disc -->
+    <circle cx="56" cy="56" r="64" fill="#0f172a" opacity="0.9" />
+    <circle cx="56" cy="56" r="54" fill="url(#accentGrad)" />
+    <!-- Diagonal Wrench -->
+    <g transform="translate(56, 56) rotate(45) translate(-28, -28)">
+      <!-- Wrench head 1 -->
+      <path d="M 8,4 C 18,4 24,12 24,20 L 32,20 L 32,36 L 24,36 C 24,44 18,52 8,52 C -2,52 -8,44 -8,36 L -16,36 L -16,20 L -8,20 C -8,12 -2,4 8,4 Z" fill="#0f172a" />
+      <circle cx="8" cy="28" r="8" fill="#38bdf8" />
+      <!-- Wrench handle -->
+      <rect x="28" y="22" width="24" height="12" rx="4" fill="#0f172a" />
+      <!-- Wrench head 2 -->
+      <circle cx="54" cy="28" r="10" fill="#0f172a" />
+      <rect x="52" y="24" width="8" height="8" rx="2" fill="#38bdf8" />
+    </g>
+  </g>
+
+  <!-- Sparkles -->
+  <path d="M 148,150 Q 158,150 158,140 Q 158,150 168,150 Q 158,150 158,160 Q 158,150 148,150 Z" fill="#38bdf8" />
+  <path d="M 370,140 Q 378,140 378,132 Q 378,140 386,140 Q 378,140 378,148 Q 378,140 370,140 Z" fill="#60a5fa" />
+</svg>

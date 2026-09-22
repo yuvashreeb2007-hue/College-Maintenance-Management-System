@@ -1,0 +1,92 @@
+{
+  "id": "/",
+  "name": "CampusFix - College Maintenance Management System",
+  "short_name": "CampusFix",
+  "description": "College Complaint & Issue Reporting System with role-based workflows for Students, Maintenance Staff, and Administrators.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": [
+    "window-controls-overlay",
+    "standalone",
+    "minimal-ui"
+  ],
+  "orientation": "portrait-primary",
+  "theme_color": "#1e3a8a",
+  "background_color": "#0f172a",
+  "lang": "en-US",
+  "dir": "ltr",
+  "categories": [
+    "education",
+    "productivity",
+    "utilities"
+  ],
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Report Issue",
+      "short_name": "Report",
+      "description": "Quickly submit a facility or maintenance issue",
+      "url": "/?action=report",
+      "icons": [
+        {
+          "src": "/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "My Complaints",
+      "short_name": "Complaints",
+      "description": "View tracking and progress of your filed tickets",
+      "url": "/?action=complaints",
+      "icons": [
+        {
+          "src": "/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Campus Dashboard",
+      "short_name": "Dashboard",
+      "description": "Open your maintenance workspace dashboard",
+      "url": "/?action=dashboard",
+      "icons": [
+        {
+          "src": "/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
+  ],
+  "screenshots": []
+}

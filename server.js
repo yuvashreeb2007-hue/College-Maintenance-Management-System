@@ -1202,6 +1202,31 @@ const staticDir = fs.existsSync(path.join(__dirname, "dist", "index.html"))
   ? path.join(__dirname, "dist")
   : path.join(__dirname, "Frontend");
 
+// Dedicated PWA Service Worker Route with Service-Worker-Allowed header and no-cache
+app.get("/sw.js", (req, res) => {
+  const swPath = path.join(staticDir, "sw.js");
+  if (fs.existsSync(swPath)) {
+    res.setHeader("Content-Type", "application/javascript");
+    res.setHeader("Service-Worker-Allowed", "/");
+    res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+    res.sendFile(swPath);
+  } else {
+    res.status(404).send("Service Worker not found");
+  }
+});
+
+// Dedicated Web App Manifest Route
+app.get(["/manifest.json", "/manifest.webmanifest"], (req, res) => {
+  const manifestPath = path.join(staticDir, "manifest.json");
+  if (fs.existsSync(manifestPath)) {
+    res.setHeader("Content-Type", "application/manifest+json; charset=utf-8");
+    res.setHeader("Cache-Control", "public, max-age=3600");
+    res.sendFile(manifestPath);
+  } else {
+    res.status(404).send("Manifest not found");
+  }
+});
+
 app.use(express.static(staticDir));
 
 app.get("*", (req, res) => {

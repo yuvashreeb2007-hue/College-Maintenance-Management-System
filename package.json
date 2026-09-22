@@ -7,9 +7,9 @@
     "dev": "node server.js",
     "build": "node -e \"const fs=require('fs'); fs.mkdirSync('dist',{recursive:true}); fs.cpSync('Frontend','dist',{recursive:true});\"",
     "start": "node server.js",
-    "test": "node --test tests/system.test.js tests/rbac.test.js tests/workflow.test.js tests/ai-reports.test.js tests/ai-chat.test.js",
+    "test": "node --test tests/system.test.js tests/rbac.test.js tests/workflow.test.js tests/ai-reports.test.js tests/ai-chat.test.js && node tests/pwa.test.js",
     "db:migrate": "node supabase/migrate.js",
-    "lint": "node --check server.js && node --check src/db/supabase.js && node --check supabase/migrate.js && node --check tests/system.test.js && node --check tests/rbac.test.js && node --check tests/workflow.test.js && node --check tests/ai-reports.test.js && node --check tests/ai-chat.test.js && node --check Frontend/script.js"
+    "lint": "node --check server.js && node --check src/db/supabase.js && node --check supabase/migrate.js && node --check tests/system.test.js && node --check tests/rbac.test.js && node --check tests/workflow.test.js && node --check tests/ai-reports.test.js && node --check tests/ai-chat.test.js && node --check tests/pwa.test.js && node --check Frontend/script.js"
   },
   "dependencies": {
     "@google/genai": "^2.24.0",
