@@ -274,7 +274,7 @@
         </div>
 
         <!-- PWA Install Action on Login Page -->
-        <div class="pwa-login-install-box hidden" id="pwaLoginInstallBox">
+        <div class="pwa-login-install-box" id="pwaLoginInstallBox">
           <button type="button" class="btn btn-soft pwa-install-trigger-btn" id="pwaLoginInstallBtn">
             <i class="fa-solid fa-download"></i> <span>Install CampusFix App</span>
           </button>
@@ -375,7 +375,7 @@
           <i class="fa-solid fa-id-badge"></i><span>My Profile</span>
         </button>
         <!-- PWA In-App Install Sidebar Item -->
-        <button class="nav-item pwa-nav-item hidden" id="pwaSidebarInstallBtn" type="button">
+        <button class="nav-item pwa-nav-item" id="pwaSidebarInstallBtn" type="button">
           <i class="fa-solid fa-cloud-arrow-down" style="color:var(--blue)"></i><span>Install App</span>
         </button>
       </nav>
@@ -419,7 +419,7 @@
           </div>
 
           <!-- PWA In-App Install Topbar Trigger -->
-          <button id="pwaInstallTopbarBtn" class="btn btn-primary btn-sm pwa-topbar-btn hidden" type="button" aria-label="Install CampusFix App">
+          <button id="pwaInstallTopbarBtn" class="btn btn-primary btn-sm pwa-topbar-btn" type="button" aria-label="Install CampusFix App">
             <i class="fa-solid fa-download"></i> <span class="install-text">Install App</span>
           </button>
 
@@ -1619,14 +1619,14 @@
   </div>
 
   <!-- In-App Floating Install Toast / Banner for Mobile & Desktop -->
-  <div id="pwaInstallBanner" class="pwa-install-banner hidden" role="dialog" aria-labelledby="pwaBannerTitle">
+  <div id="pwaInstallBanner" class="pwa-install-banner" role="dialog" aria-labelledby="pwaBannerTitle">
     <div class="pwa-banner-content">
       <div class="pwa-banner-icon">
         <i class="fa-solid fa-cloud-arrow-down"></i>
       </div>
       <div class="pwa-banner-text">
-        <strong id="pwaBannerTitle">Install CampusFix</strong>
-        <p>Add to your home screen for quick offline access and instant loading.</p>
+        <strong id="pwaBannerTitle">Install CampusFix App</strong>
+        <p>Add to your home screen or desktop for fast offline access & notifications.</p>
       </div>
     </div>
     <div class="pwa-banner-actions">
@@ -1639,45 +1639,134 @@
     </div>
   </div>
 
-  <!-- iOS Safari Add to Home Screen Instructions Modal -->
-  <div id="iosInstallModal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="iosInstallTitle">
-    <div class="modal-card ios-modal-card glass">
+  <!-- Universal PWA Installation Guide Modal -->
+  <div id="iosInstallModal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="pwaInstallTitle">
+    <div class="modal-card pwa-install-modal-card glass">
       <div class="modal-header">
         <div class="modal-title-lockup">
-          <div class="brand-mark sm"><i class="fa-brands fa-apple"></i></div>
+          <div class="brand-mark sm"><i class="fa-solid fa-cloud-arrow-down"></i></div>
           <div>
-            <h3 id="iosInstallTitle">Install CampusFix on iPhone / iPad</h3>
-            <p>Add to Home Screen in 2 simple steps</p>
+            <h3 id="pwaInstallTitle">Install CampusFix PWA</h3>
+            <p>Standalone App for Desktop, Android, & iOS</p>
           </div>
         </div>
         <button class="icon-btn" id="closeIosInstallModal" aria-label="Close dialog">
           <i class="fa-solid fa-xmark"></i>
         </button>
       </div>
-      <div class="modal-body ios-guide-steps">
-        <div class="ios-step-item">
-          <div class="ios-step-num">1</div>
-          <div class="ios-step-content">
-            <strong>Open Safari Share Menu</strong>
-            <p>Tap the <strong>Share</strong> button <i class="fa-solid fa-arrow-up-from-bracket" style="color:var(--blue)"></i> in the Safari bottom toolbar.</p>
+
+      <div class="modal-body pwa-modal-body">
+        <!-- Notice if running inside an iframe (like AI Studio preview) -->
+        <div id="pwaIframeNotice" class="pwa-iframe-callout hidden">
+          <div class="callout-icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></div>
+          <div class="callout-text">
+            <strong>Browser Security Requirement</strong>
+            <p>Web browsers prevent direct app installation inside embedded preview frames. Open CampusFix directly in a new browser tab to trigger 1-click installation.</p>
+            <a id="pwaOpenNewTabBtn" href="/" target="_blank" class="btn btn-primary btn-sm" style="margin-top:8px; display:inline-flex; align-items:center; gap:6px; text-decoration:none;">
+              <i class="fa-solid fa-arrow-up-right-from-square"></i> Open in New Tab & Install
+            </a>
           </div>
         </div>
-        <div class="ios-step-item">
-          <div class="ios-step-num">2</div>
-          <div class="ios-step-content">
-            <strong>Choose Add to Home Screen</strong>
-            <p>Scroll down in the action sheet and select <strong><i class="fa-regular fa-square-plus" style="color:var(--blue)"></i> Add to Home Screen</strong>.</p>
+
+        <!-- Native Prompt Trigger (When browser beforeinstallprompt is ready) -->
+        <div id="pwaNativePromptBlock" class="pwa-native-prompt-block hidden">
+          <p style="font-size:12px; color:#475569; margin-bottom:10px;">Your browser is ready to install CampusFix right now:</p>
+          <button type="button" class="btn btn-primary" id="pwaDirectInstallBtn" style="width:100%; justify-content:center; gap:8px;">
+            <i class="fa-solid fa-download"></i> Install Now (Native Dialog)
+          </button>
+        </div>
+
+        <!-- Device Selector Tabs -->
+        <div class="pwa-platform-tabs">
+          <button type="button" class="pwa-platform-tab active" data-platform="desktop" id="tabDesktopBtn">
+            <i class="fa-solid fa-desktop"></i> Desktop (Chrome/Edge)
+          </button>
+          <button type="button" class="pwa-platform-tab" data-platform="android" id="tabAndroidBtn">
+            <i class="fa-brands fa-android"></i> Android
+          </button>
+          <button type="button" class="pwa-platform-tab" data-platform="ios" id="tabIosBtn">
+            <i class="fa-brands fa-apple"></i> iPhone / iPad
+          </button>
+        </div>
+
+        <!-- Desktop Guide -->
+        <div class="pwa-guide-content" id="guideDesktop">
+          <div class="ios-step-item">
+            <div class="ios-step-num">1</div>
+            <div class="ios-step-content">
+              <strong>Omnibox / Address Bar Icon</strong>
+              <p>Look at the right side of your browser URL address bar for the <i class="fa-solid fa-download" style="color:var(--blue)"></i> <strong>Install</strong> or <i class="fa-regular fa-square-plus" style="color:var(--blue)"></i> app icon.</p>
+            </div>
+          </div>
+          <div class="ios-step-item">
+            <div class="ios-step-num">2</div>
+            <div class="ios-step-content">
+              <strong>Or Use Browser Menu</strong>
+              <p>Click the 3 dots (<strong>⋮</strong>) in Chrome/Edge, select <strong>Save and share</strong> (or <strong>Apps</strong>) &rarr; <strong>Install CampusFix...</strong></p>
+            </div>
+          </div>
+          <div class="ios-step-item">
+            <div class="ios-step-num">3</div>
+            <div class="ios-step-content">
+              <strong>Standalone App Window</strong>
+              <p>Click <strong>Install</strong>. CampusFix will pop out into its own dedicated desktop window with its own icon in your dock/taskbar.</p>
+            </div>
           </div>
         </div>
-        <div class="ios-step-item">
-          <div class="ios-step-num">3</div>
-          <div class="ios-step-content">
-            <strong>Confirm and Launch</strong>
-            <p>Tap <strong>Add</strong> in the top right. CampusFix will install to your device and run in standalone mode with full screen space.</p>
+
+        <!-- Android Guide -->
+        <div class="pwa-guide-content hidden" id="guideAndroid">
+          <div class="ios-step-item">
+            <div class="ios-step-num">1</div>
+            <div class="ios-step-content">
+              <strong>Open Chrome Menu</strong>
+              <p>Tap the 3 dots (<strong>⋮</strong>) in the top-right corner of Google Chrome or Samsung Internet.</p>
+            </div>
+          </div>
+          <div class="ios-step-item">
+            <div class="ios-step-num">2</div>
+            <div class="ios-step-content">
+              <strong>Select Install App</strong>
+              <p>Tap <strong>Install app</strong> or <strong>Add to Home screen</strong> in the menu options.</p>
+            </div>
+          </div>
+          <div class="ios-step-item">
+            <div class="ios-step-num">3</div>
+            <div class="ios-step-content">
+              <strong>Instant Home Screen Launch</strong>
+              <p>Confirm by tapping <strong>Install</strong>. CampusFix appears in your Android app drawer with full offline caching enabled.</p>
+            </div>
           </div>
         </div>
+
+        <!-- iOS Guide -->
+        <div class="pwa-guide-content hidden" id="guideIos">
+          <div class="ios-step-item">
+            <div class="ios-step-num">1</div>
+            <div class="ios-step-content">
+              <strong>Open Safari Share Menu</strong>
+              <p>Tap the <strong>Share</strong> button <i class="fa-solid fa-arrow-up-from-bracket" style="color:var(--blue)"></i> in the Safari bottom toolbar.</p>
+            </div>
+          </div>
+          <div class="ios-step-item">
+            <div class="ios-step-num">2</div>
+            <div class="ios-step-content">
+              <strong>Choose Add to Home Screen</strong>
+              <p>Scroll down in the action sheet and select <strong><i class="fa-regular fa-square-plus" style="color:var(--blue)"></i> Add to Home Screen</strong>.</p>
+            </div>
+          </div>
+          <div class="ios-step-item">
+            <div class="ios-step-num">3</div>
+            <div class="ios-step-content">
+              <strong>Confirm and Launch</strong>
+              <p>Tap <strong>Add</strong> in the top right. CampusFix will install to your device and run in standalone mode with full screen space.</p>
+            </div>
+          </div>
+        </div>
+
       </div>
-      <div class="modal-actions">
+
+      <div class="modal-actions" style="margin-top:14px;">
         <button type="button" class="btn btn-primary" id="dismissIosInstallBtn">Got it, thanks!</button>
       </div>
     </div>

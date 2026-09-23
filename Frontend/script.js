@@ -2565,27 +2565,94 @@ function hidePwaInstallTriggers() {
 
 async function triggerPwaInstall() {
   if (deferredInstallPrompt) {
-    deferredInstallPrompt.prompt();
-    const { outcome } = await deferredInstallPrompt.userChoice;
-    if (outcome === 'accepted') {
-      toast('Installing CampusFix', 'CampusFix is being added to your device...', 'fa-download');
-      hidePwaInstallTriggers();
+    try {
+      deferredInstallPrompt.prompt();
+      const { outcome } = await deferredInstallPrompt.userChoice;
+      if (outcome === 'accepted') {
+        toast('Installing CampusFix', 'CampusFix is being added to your device...', 'fa-download');
+        hidePwaInstallTriggers();
+      }
+      deferredInstallPrompt = null;
+      return;
+    } catch (e) {
+      console.warn('Native prompt error:', e);
     }
-    deferredInstallPrompt = null;
-  } else if (isIosDevice) {
-    openIosInstallModal();
-  } else {
-    // Desktop Chrome/Edge or already prompted
-    toast('Install CampusFix', 'Use your browser address bar icon (⊕ or ⬇) or menu (⋮) -> "Install CampusFix".', 'fa-desktop');
   }
+
+  // If native prompt is not available (e.g. running in iframe, iOS, or desktop before prompt fired)
+  openPwaInstallModal();
 }
 
-function openIosInstallModal() {
+function switchPwaPlatformTab(platform) {
+  const tabs = {
+    desktop: { tab: $('tabDesktopBtn'), guide: $('guideDesktop') },
+    android: { tab: $('tabAndroidBtn'), guide: $('guideAndroid') },
+    ios: { tab: $('tabIosBtn'), guide: $('guideIos') }
+  };
+
+  Object.keys(tabs).forEach(key => {
+    const item = tabs[key];
+    if (item.tab) {
+      if (key === platform) {
+        item.tab.classList.add('active');
+      } else {
+        item.tab.classList.remove('active');
+      }
+    }
+    if (item.guide) {
+      if (key === platform) {
+        item.guide.classList.remove('hidden');
+      } else {
+        item.guide.classList.add('hidden');
+      }
+    }
+  });
+}
+
+function openPwaInstallModal() {
   const modal = $('iosInstallModal');
-  if (modal) modal.classList.remove('hidden');
+  if (!modal) return;
+
+  const isInIframe = window.self !== window.top;
+  const iframeNotice = $('pwaIframeNotice');
+  const openNewTabBtn = $('pwaOpenNewTabBtn');
+  const nativeBlock = $('pwaNativePromptBlock');
+
+  // If inside preview iframe (e.g. AI Studio container)
+  if (iframeNotice) {
+    if (isInIframe) {
+      iframeNotice.classList.remove('hidden');
+      if (openNewTabBtn) {
+        openNewTabBtn.href = window.location.href;
+      }
+    } else {
+      iframeNotice.classList.add('hidden');
+    }
+  }
+
+  // Native prompt button
+  if (nativeBlock) {
+    if (deferredInstallPrompt) {
+      nativeBlock.classList.remove('hidden');
+    } else {
+      nativeBlock.classList.add('hidden');
+    }
+  }
+
+  // Auto-select platform tab based on OS
+  const isAndroid = /android/i.test(navigator.userAgent);
+  if (isIosDevice) {
+    switchPwaPlatformTab('ios');
+  } else if (isAndroid) {
+    switchPwaPlatformTab('android');
+  } else {
+    switchPwaPlatformTab('desktop');
+  }
+
+  modal.classList.remove('hidden');
 }
 
-function closeIosInstallModal() {
+function closePwaInstallModal() {
   const modal = $('iosInstallModal');
   if (modal) modal.classList.add('hidden');
 }
@@ -2596,13 +2663,16 @@ function initPwaInstallListeners() {
     e.preventDefault();
     deferredInstallPrompt = e;
     showPwaInstallTriggers();
+    const nativeBlock = $('pwaNativePromptBlock');
+    if (nativeBlock) nativeBlock.classList.remove('hidden');
   });
 
   // Native App Installed Event
   window.addEventListener('appinstalled', () => {
     deferredInstallPrompt = null;
     hidePwaInstallTriggers();
-    toast('Installation Complete', 'CampusFix is now installed! You can launch it from your home screen.', 'fa-circle-check');
+    closePwaInstallModal();
+    toast('Installation Complete', 'CampusFix is now installed! You can launch it from your home screen or desktop.', 'fa-circle-check');
   });
 
   // Bind all install action buttons
@@ -2623,6 +2693,25 @@ function initPwaInstallListeners() {
     }
   });
 
+  // Native prompt block button inside modal
+  const directBtn = $('pwaDirectInstallBtn');
+  if (directBtn) {
+    directBtn.addEventListener('click', () => {
+      if (deferredInstallPrompt) {
+        triggerPwaInstall();
+      }
+    });
+  }
+
+  // Platform tab click handlers
+  const tabDesktop = $('tabDesktopBtn');
+  const tabAndroid = $('tabAndroidBtn');
+  const tabIos = $('tabIosBtn');
+
+  if (tabDesktop) tabDesktop.addEventListener('click', () => switchPwaPlatformTab('desktop'));
+  if (tabAndroid) tabAndroid.addEventListener('click', () => switchPwaPlatformTab('android'));
+  if (tabIos) tabIos.addEventListener('click', () => switchPwaPlatformTab('ios'));
+
   // Banner dismiss button
   const dismissBtn = $('pwaBannerDismissBtn');
   if (dismissBtn) {
@@ -2633,14 +2722,14 @@ function initPwaInstallListeners() {
     });
   }
 
-  // iOS Guide Modal Close buttons
+  // Guide Modal Close buttons
   const closeIosBtn = $('closeIosInstallModal');
   const dismissIosBtn = $('dismissIosInstallBtn');
-  if (closeIosBtn) closeIosBtn.addEventListener('click', closeIosInstallModal);
-  if (dismissIosBtn) dismissIosBtn.addEventListener('click', closeIosInstallModal);
+  if (closeIosBtn) closeIosBtn.addEventListener('click', closePwaInstallModal);
+  if (dismissIosBtn) dismissIosBtn.addEventListener('click', closePwaInstallModal);
 
-  // If on iOS and not standalone, show install options so users can view the guide
-  if (isIosDevice && !isStandaloneApp) {
+  // ALWAYS show install triggers when not running in standalone display mode
+  if (!isStandaloneApp) {
     showPwaInstallTriggers();
   }
 }
@@ -2666,6 +2755,8 @@ function handlePwaUrlAction() {
       }
     } else if (action === 'chat') {
       openAiChat();
+    } else if (action === 'install') {
+      triggerPwaInstall();
     }
   } catch (e) {
     console.warn('[CampusFix PWA] Error handling URL action shortcut:', e);
@@ -2680,6 +2771,7 @@ initStandaloneMode();
 initServiceWorker();
 initNetworkStatusMonitoring();
 initPwaInstallListeners();
+handlePwaUrlAction();
 checkExistingSession();
 
 // Periodic Notification Badge Polling

@@ -942,7 +942,94 @@ input,select,textarea{max-width:100%}
   flex-shrink:0;
 }
 
-/* iOS Safari Installation Guide */
+/* PWA Installation Guide Modal & Platform Tabs */
+.pwa-install-modal-card{
+  max-width:540px;
+  width:100%;
+}
+.pwa-modal-body{
+  padding:4px 0;
+}
+.pwa-iframe-callout{
+  display:flex;
+  gap:12px;
+  background:rgba(37,99,235,.08);
+  border:1px solid rgba(37,99,235,.25);
+  border-radius:12px;
+  padding:12px 14px;
+  margin-bottom:14px;
+}
+.pwa-iframe-callout .callout-icon{
+  width:32px;
+  height:32px;
+  border-radius:8px;
+  background:var(--blue);
+  color:#ffffff;
+  display:grid;
+  place-items:center;
+  font-size:14px;
+  flex-shrink:0;
+}
+.pwa-iframe-callout .callout-text strong{
+  font-size:13px;
+  color:#1e3a8a;
+  display:block;
+  margin-bottom:2px;
+}
+.pwa-iframe-callout .callout-text p{
+  font-size:12px;
+  color:#334155;
+  margin:0;
+  line-height:1.45;
+}
+
+.pwa-native-prompt-block{
+  background:#f0fdf4;
+  border:1px solid #bbf7d0;
+  border-radius:12px;
+  padding:12px 14px;
+  margin-bottom:14px;
+}
+
+.pwa-platform-tabs{
+  display:flex;
+  gap:6px;
+  background:#f1f5f9;
+  padding:4px;
+  border-radius:10px;
+  margin-bottom:14px;
+}
+.pwa-platform-tab{
+  flex:1;
+  border:none;
+  background:transparent;
+  padding:8px 6px;
+  font-size:11px;
+  font-weight:700;
+  color:#64748b;
+  border-radius:7px;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  transition:all .15s ease;
+  white-space:nowrap;
+}
+.pwa-platform-tab:hover{
+  color:#0f172a;
+}
+.pwa-platform-tab.active{
+  background:#ffffff;
+  color:var(--blue);
+  box-shadow:0 2px 6px rgba(0,0,0,.08);
+}
+
+.pwa-guide-content{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
 .ios-guide-steps{
   display:flex;
   flex-direction:column;
